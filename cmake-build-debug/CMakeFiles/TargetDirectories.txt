@@ -1,0 +1,3 @@
+/home/daniela/Escritorio/Algoritmo y Programacion 2/TAD/Ejemplo de TDA lista_con cursor/cmake-build-debug/CMakeFiles/Ejemplo_de_TDA_lista_con_cursor.dir
+/home/daniela/Escritorio/Algoritmo y Programacion 2/TAD/Ejemplo de TDA lista_con cursor/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/daniela/Escritorio/Algoritmo y Programacion 2/TAD/Ejemplo de TDA lista_con cursor/cmake-build-debug/CMakeFiles/rebuild_cache.dir
