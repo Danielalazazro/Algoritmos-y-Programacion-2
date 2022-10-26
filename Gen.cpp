@@ -4,6 +4,8 @@
 
 #include "Gen.h"
 #include <iostream>
+
+using namespace std;
 Gen::Gen() {}
 Gen::Gen(unsigned int cargaGen) {
     verificarEnRango(cargaGen);
@@ -14,14 +16,44 @@ Gen::Gen(unsigned int cargaGen) {
         cargaGenetica =  rand() % 255;
     }
 }
-Gen::~Gen() {}
+Gen::~Gen(){}
 
 unsigned int Gen::getCargaGenetica() {
     return this->cargaGenetica;
 }
+
 void Gen::setCargaGenetica(unsigned int cargaGenetica) {
     this->cargaGenetica = cargaGenetica;
 }
+
 bool Gen::verificarEnRango(unsigned int cargaGenetica) {
     return ((cargaGenetica >= 0) && (cargaGenetica <= maximaCargaGenetica));
+}
+
+void Gen::insertarCargaUsuario(){
+    int cargaGeneticaIngreso;
+    cout << "Ingrese la  carga genetica  de la celula: ";
+    while((verificarEnRango(cargaGeneticaIngreso))){
+        cin >> cargaGeneticaIngreso;
+        if(not verificarEnRango(cargaGeneticaIngreso)){
+            cout <<  "Error, ingrese una carga genetica valida o de ntro del rango";
+        }
+    }
+    this->cargaGenetica = cargaGeneticaIngreso;
+}
+
+void Gen::insertarCargaAleatoria(){
+    int cargaGeneticaAleatoria = rand() % maximaCargaGenetica;
+    this->cargaGenetica = cargaGeneticaAleatoria;
+
+}
+bool Gen::estaVivoGen(){
+    {
+        return (cargaGenetica > 0);
+    }
+}
+void Gen::matarGen(){
+
+    cargaGenetica = 0;
+
 }

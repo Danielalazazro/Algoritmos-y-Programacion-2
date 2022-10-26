@@ -2,24 +2,61 @@
 #ifndef EJERCICIO_1_NODO_H
 #define EJERCICIO_1_NODO_H
 
+#ifndef NULL
+#define NULL 0
+#endif
 
-class Nodo {
+template<class  T> class Nodo {
+
 private:
-    int info;
 
-    Nodo* sig;
+    T dato;
+
+    Nodo<T>* siguiente;
 
 public:
-    Nodo(int,Nodo*);
 
-    int getInfo();
+    /*
+     * post: el Nodo resulta inicializado con el dato dado
+     *       y sin un Nodo siguiente.
+     */
+    Nodo(T dato) {
 
-    Nodo* getSig();
+        this->dato = dato;
+        this->siguiente = NULL;
+    }
 
-    void setInfo(int i);
+    /*
+     * post: devuelve el valor del dato.
+     */
+    T obtenerDato() {
 
-    void setSig(Nodo* n);
+        return this->dato;
+    }
 
+    /*
+     * post: cambia el valor del dato.
+     */
+    void cambiarDato(T nuevoDato) {
+
+        this->dato = nuevoDato;
+    }
+
+    /*
+     * post: devuelve el siguiente Nodo.
+     */
+    Nodo<T>* obtenerSiguiente() {
+
+        return this->siguiente;
+    }
+
+    /*
+     * post: cambia el siguiente Nodo por nuevoSiguiente.
+     */
+    void cambiarSiguiente(Nodo<T>* nuevoSiguiente) {
+
+        this->siguiente = nuevoSiguiente;
+    }
 };
 
 
