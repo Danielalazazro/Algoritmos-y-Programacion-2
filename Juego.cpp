@@ -1,6 +1,7 @@
 #include "Juego.h"
 #include <iostream>
 #include "Tablero.h"
+#include "cmath"
 
 Juego::Juego(){}
 int Juego::obtenerModoJuego(){
@@ -13,81 +14,114 @@ void Juego::mostrarModoDeJuego(){
     cout << "Bienvenido al juego de la vida";
     cout << "Modo de configuracion de Juego\n";
     cout << "1. El jugador  ingresa las dimensiones del tablero, las posiciones de la celula viva, la cantidad de celula vivas, las cargas genetica.\n"
-            "2. El jugador  ingresa las dimensiones del tablero  y las posiciones de las celulas vivas \n"
-            "3. El programador ingresa las dimensiones del tablero, las posiciones de la celula viva , la carga genetica de cada celula\n  "
+            "2. El todo es aleatorio \n"
+            "3. El programador ingresa las posiciones de la celula viva , la carga genetica de cada celula\n  "
             "Ingrese el modo de juego : ";
     cin >> modoJuego;
     while( not (modoJuego <= 3 && modoJuego > 0)){
-        std::cout<<"Error ingrese un modo de juego correcto";
+        std::cout<<"Error ingrese un modo de juego correcto: ";
         cin >>modoJuego;
     }
     this->modoJuego = modoJuego;
 
 }
-void Juego::creacionTablero(){
-    if ((modoJuego == 1) || (modoJuego == 3))
-        cargarDimensionesDelTableroUsuario();
 
-
-    else if (modoJuego == 2) {
-        cargaDeDimensionesDeTableroAleatoria();
-    }
-
-}
 
 void Juego::iniciarJuego(){
     mostrarModoDeJuego();
-    creacionTablero();
+    if(modoJuego == 1) {
+        cargarDimensionesDelTableroUsuario();
+        cargarCantCelulaVivaNacerySigaViva();
+    }
+    else if(modoJuego == 2){
+        cargaDeDimensionesDeTableroAleatoria();
+        tablero->cargarParametrosRandom();
+        tablero->cargarCelulasVivasyCargaRandom();
+    }
+    else if(modoJuego == 3){
+        cargarDimensionesDelTableroUsuario();
+        cargarPosicionesyOtroParametros();
+    }
+    continuarJuego();
 }
+//Llamo a las celulas ingresada por el usuario segun el modo de juego elegido.
+//
+void Juego::continuarJuego(){
+    char continuar = 's';
+    while(continuar == 's'){
+        tablero->actualizarTablero();
+        cout << "Desea continuar el juego (s/n) ?:"<<endl;
+        cin >> continuar;
+    }
+
+
+}
+
 
 void Juego::cargarDimensionesDelTableroUsuario(){
-    int ancho = 0;
-    int alto = 0;
+    int fila = 0;
+    int columna = 0;
     int profundidad = 0;
-    bool dimensionesCorrectas = false;
-    while(  not (dimensionesCorrectas) ) {
 
-        cout << "Ingrese el  ancho del tablero:  ";
-        cin >> ancho;
-        cout << "Ingrese el alto del tablero: ";
-        cin >> alto;
-        cout << "Ingrese la profundidad del tablero: ";
-        cin >> profundidad;
-        if((ancho > 0) && (alto > 0) &&( profundidad >0)){
-            dimensionesCorrectas = true;
-        }
-        else{
-            cout << "Ingrese deimensiones positiva y enteras";
+    cout << "Ingrese el  fila del tablero:  ";
+    verificadorEnRango(3, 100, &fila);
+    cout << "Ingrese el columna del tablero: ";
+    verificadorEnRango(3, 100, &columna);
+    cout << "Ingrese la profundidad del tablero: ";
+    verificadorEnRango(3, 100 ,&profundidad);
+
+    tablero = new Tablero(fila, columna, profundidad);
+
+}
+
+void Juego::cargaDeDimensionesDeTableroAleatoria(){
+    int anchoAleatorio = 3 + rand() %  20;
+    int altoAleatorio = 3 + rand() % 20;
+    int profundidadAleatorio = 3 + rand() % 20;
+    tablero = new Tablero(anchoAleatorio, altoAleatorio, profundidadAleatorio);
+    tablero->cargarCelulasVivasyCargaRandom();
+
+}
+
+void Juego::verificadorEnRango(int limiteinferior, int limiteSuperior, int *ingresoUsuario){
+    *ingresoUsuario = -1;
+    std::cout << "Ingrese un valor entre limite inferior  "<< limiteinferior << " y limite superior  " << limiteSuperior << ": "<<std::endl;
+    while((*ingresoUsuario > limiteSuperior ) || (*ingresoUsuario < limiteinferior)){
+        std::cin >> *ingresoUsuario;
+        if((*ingresoUsuario > limiteSuperior) || (*ingresoUsuario < limiteinferior )) {
+            std::cout << "Error rango invalido" << std::endl;
+            std::cout << "Ingrese un valor entre limite inferior  "<< limiteinferior << " y limite superior  " << limiteSuperior << ": "<<std::endl;
         }
     }
-    tablero = new Tablero(ancho,alto,profundidad);
+}
+int Juego::maxCantCelulasVivas(){
+    int maximoGeneral = tablero->obtenerFila()* tablero->obtenerColumna() * tablero->obtenerProfundidad();
+    return maximoGeneral;
 
 }
-void Juego::cargaDeDimensionesDeTableroAleatoria(){
-    int anchoAleatorio = rand() %  20;
-    int altoAleatorio = rand() % 20;
-    int profundidadAleatorio = rand() % 20;
-    tablero = new Tablero(anchoAleatorio, altoAleatorio, profundidadAleatorio);
-    tablero->cargarCelulasAleatoria();
 
-}
 
 void Juego::cargarCantCelulaVivaNacerySigaViva(){
-    int cantCelulasVecinasParaNacer, cantidadCelulasSigaViva1, cantidadCelulasSigaViva2;
+    int cantCelulasVecinasParaNacer, cantidadCelulasSigaViva1, cantidadCelulasSigaViva2, cantidadCelulasVivas;
+    cout << "Ingrese la cantidad de celulas vivas (8 a 26):" ;
 
-    cout << "Ingrese la cantidad de celulas vicinas para que una celula nueva nazca: ";
-    cin >> cantCelulasVecinasParaNacer;
-    verificarCargasCelulasVecinasNazcaCelula(&cantCelulasVecinasParaNacer);
+    verificadorEnRango(minimoCantCelulaVivas, maxCantCelulasVivas(),&cantidadCelulasVivas);
+    tablero->setCantCelulasVivasActuale(cantidadCelulasVivas);
 
-    cout << "Ingrese la cantidad de celulas vecinas  para que una celula siga viva: ";
-    cin >> cantidadCelulasSigaViva1;
-    verificarCargasCelulasVecinasSigaViva(cantCelulasVecinasParaNacer, &cantidadCelulasSigaViva1);
-    cout << "Ingrese la otra cantidad de celulas vecinas  para que una celula siga viva: ";
-    cin >> cantidadCelulasSigaViva2;
-    verificarCargasCelulasVecinasSigaViva(cantidadCelulasSigaViva1,&cantidadCelulasSigaViva2);
-    tablero->setearCantidadCelulasVivasParaNacer(cantCelulasVecinasParaNacer,cantidadCelulasSigaViva1,cantidadCelulasSigaViva2);
+    //Tengo que hacer con un while y contador ingreso de posiciones de celulas vivas y la celda->celula->cargarCargaGenticaUsuario.
+    cout << "Ingrese la cantidad de celulas vecinas vivas para que una celula nueva nazca: " <<endl;
+
+    verificadorEnRango(1, tablero->minEntreFilaColumnaProfundidad(), &cantCelulasVecinasParaNacer);
+
+    cout << "Ingrese la cantidad de celulas vecinas  para que una celula siga viva: "<<endl;
+
+    verificadorEnRango(1, tablero->minEntreFilaColumnaProfundidad(), &cantidadCelulasSigaViva1);
+    cout << "Ingrese la otra cantidad de celulas vecinas  para que una celula siga viva: "<<endl;
+
+    verificadorEnRango(cantidadCelulasSigaViva1, cantidadCelulasSigaViva1 + 2, &cantidadCelulasSigaViva2);
+    tablero->setearCantidadCelulasVivasParaNacer(cantCelulasVecinasParaNacer,cantidadCelulasSigaViva1,cantidadCelulasSigaViva2,1);
 }
-void Juego::continuarJuego(){}
+
 
 void Juego::verificarCargasCelulasVecinasNazcaCelula(int *cantidadCelulasVecinasParaNacer){
     while((*cantidadCelulasVecinasParaNacer < 0) && (*cantidadCelulasVecinasParaNacer > maximaCelulasVecinasAdy)){
@@ -107,11 +141,29 @@ void Juego::verificarCargasCelulasVecinasSigaViva(int limiteSigaViva, int *canti
 
 }
 
+
 void Juego::setearTablero(int cantidadCelulas){
     Tablero*  tablero = tablero;
 }
-void Juego::obtenerTablero(){
-    this->tablero;
-}
+
 
 Juego::~Juego(){}
+//
+void Juego::cargarPosicionesyOtroParametros() {
+    int cantCelulasVecinasParaNacer, cantidadCelulasSigaViva1, cantidadCelulasSigaViva2, cantidadCelulasVivas;
+    cout << "Ingrese la cantidad de celulas vivas (8 a 26):" ;
+
+    verificadorEnRango(minimoCantCelulaVivas, maxCantCelulasVivas(),&cantidadCelulasVivas);
+    tablero->setCantCelulasVivasActuale(cantidadCelulasVivas);
+    //Tengo que hacer con un while y contador ingreso de posiciones de celulas vivas y la celda->celula->cargarCargaGenticaUsuario.
+
+    cantCelulasVecinasParaNacer = 1 + rand() % tablero->minEntreFilaColumnaProfundidad();
+    cantidadCelulasSigaViva1 = 1 + rand() % tablero->minEntreFilaColumnaProfundidad();
+    cantidadCelulasSigaViva2 = cantidadCelulasSigaViva1 + 2;
+
+
+    tablero->setearCantidadCelulasVivasParaNacer(cantCelulasVecinasParaNacer,cantidadCelulasSigaViva1,cantidadCelulasSigaViva2, 3);
+
+
+
+}

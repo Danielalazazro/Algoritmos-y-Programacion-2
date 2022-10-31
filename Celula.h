@@ -5,14 +5,14 @@
 #ifndef TP2_CELULA_H
 #define TP2_CELULA_H
 #include "Gen.h"
+#include "Lista.h"
 
-
+static unsigned int maximoGenes = 3;
 class Celula {
 private:
-    int estado;
-
+    int estadoActual;
+    int estadoAnterior;
     Gen arrayGen[3];
-
     char celula;
 
 public:
@@ -46,8 +46,8 @@ public:
      */
     bool estaViva();
     /*
-     * pre: previmente el estado de la celula es 0 , lo cual indica que esta muerta.
-     * post: cambia el estado de la celula a 1.
+     * pre: previmente el estadoActual de la celula es 0 , lo cual indica que esta muerta.
+     * post: cambia el estadoActual de la celula a 1.
      */
     void revivir();
     /*
@@ -60,8 +60,46 @@ public:
      * post: devulve el tablero con las carga geneticas ingresadas por el usuario.
      */
     void setearCargaGeneticaUsuario();
-
+    /*
+     * pre:
+     * post:
+     */
     void matarCelula();
+    /*
+     * pre:
+     * post:
+     */
+    bool haNacido();
+    /*
+     * pre:
+     * post:
+     */
+    bool estaMuerta();
+    /*
+     * pre:
+     * post:
+     */
+    void heredarCargaGenetica(Lista<Celula *> *celulasVivas, int estadoCelda );
+    /*
+     * pre:
+     * post:
+     */
+    Gen* getArrayGen();
+    /*
+     * pre:
+     * post:
+     */
+    Gen* promedioDeCargas(Lista<Celula *> *celulasVivas);
+    /*
+     * pre:
+     * post:
+     */
+    Gen* minimoDeCargas(Lista<Celula *> *celulasVivas);
+    /*
+     * pre:
+     * post:
+     */
+    Gen* maximoDeCargas(Lista<Celula *> *celulasVivas);
 };
 
 

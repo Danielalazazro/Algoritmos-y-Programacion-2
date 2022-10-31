@@ -5,14 +5,19 @@
 #ifndef TP2_CELULAS_H
 #define TP2_CELULAS_H
 #include "Celula.h"
+#include "Lista.h"
 
 
 class Celda {
 private:
     //Para 2 dimenciones // y para 3 dimensiones es Celda****vecinos
     Celda****vecinosAdyacentes;
-    int estadoDeCelda; //estado que epuede variar
+    Lista<Celda*> * celdasAdyacentes;
+    int estadoDeCelda; //estadoActual que epuede variar
     Celula* celula;
+    int posicionX;
+    int posicionY;
+    int posicionZ;
 public:
     /*
      * pre:
@@ -23,12 +28,12 @@ public:
      * pre:
      * post:
      */
-    Celda(int profundidad, int fila, int columna);
+    Celda(int filaIngresa, int columnaIngresada, int profundidadIngresada);
     /*
      * pre:
      * post:
      */
-    void setyAplicarConportamiento();
+    void aplicarConportamiento();
     /*
      * pre:
      * post:
@@ -56,7 +61,7 @@ public:
     void  aplicarRadioactividad();
     /*
      * pre:-
-     * post: cambia el estado de la celda
+     * post: cambia el estadoActual de la celda
      */
     void setCelula(Celula* celulaIngresada);
     /*
@@ -87,18 +92,54 @@ public:
      */
     ~Celda();
 
+    /*
+     * pre:
+     * post:
+     */
+    int getPosX();
+    /*
+     * pre:
+     * post:
+     */
+    int getPosY();
+    /*
+     * pre:
+     * post:
+     */
+    int getPosZ();
 
+    void agregarAdyacente(Celda *pCelda);
+    /*
+     * pre:
+     * post:
+     */
+    Lista<Celda*>* getCeldasAdyacentes();
+
+    void imprimirCelda();
+
+    void revivirCelula();
     bool tieneEstadoProcreadora();
+    /*
+     * pre:
+     * post:
+     */
+    int obtenerCantCelVivasAdy();
+
+    int getEstado();
+
+    bool tieneEstadoContaminada();
+
+    void setNuevoEstado();
 };
 
 
-//estado qu epuede variar
+//estadoActual qu epuede variar
 /*
-int contaminada;//estado = 1:celda contaminada
-int envenenada;//estado = 2 :celda envenenada
+int contaminada;//estadoActual = 1:celda contaminada
+int envenenada;//estadoActual = 2 :celda envenenada
 int procreadora;//estade = 3:celda preocreadora
-int portal;//estado = 4:celda portal
-//estado = 5 :celda radioactiva
+int portal;//estadoActual = 4:celda portal
+//estadoActual = 5 :celda radioactiva
 int estadoDeCelda;
 */
 

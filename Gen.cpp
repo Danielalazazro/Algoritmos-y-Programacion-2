@@ -31,12 +31,13 @@ bool Gen::verificarEnRango(unsigned int cargaGenetica) {
 }
 
 void Gen::insertarCargaUsuario(){
-    int cargaGeneticaIngreso;
-    cout << "Ingrese la  carga genetica  de la celula: ";
-    while((verificarEnRango(cargaGeneticaIngreso))){
+    unsigned int cargaGeneticaIngreso = 300;
+    cout << "Ingrese la  carga genetica  de la celula:"<< endl;
+
+    while(not (verificarEnRango(cargaGeneticaIngreso))){
         cin >> cargaGeneticaIngreso;
         if(not verificarEnRango(cargaGeneticaIngreso)){
-            cout <<  "Error, ingrese una carga genetica valida o de ntro del rango";
+            cout << "Error, ingrese una carga genetica valida o dentro del rango"<<endl;
         }
     }
     this->cargaGenetica = cargaGeneticaIngreso;

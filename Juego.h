@@ -7,6 +7,7 @@
 
 #include "Tablero.h"
 static const unsigned int maximaCelulasVecinasAdy = 26;
+static const unsigned int minimoCantCelulaVivas = 8;
 class Juego {
 private:
 
@@ -26,7 +27,7 @@ public:
      */
     Juego();
     /*
-     * pre:  Necesita  como parametros el alto , el ancho y la profundidad del tablero.
+     * pre:  Necesita  como parametros el alto , el ancho y la posicionZ del tablero.
      * post: Devulve la dimensiones del tablero del juego
      */
     void cargarDimensionesDelTableroUsuario();
@@ -45,11 +46,7 @@ public:
      * post:nos devuelve las dimensiones del tablero con las dimensiones aleatorias.
      */
     void cargaDeDimensionesDeTableroAleatoria();
-    /*
-     * pre: El usuario debe elegir el modo de juego o la configuracion del juego
-     * post: Nos devulve el tablero con sus dimensiones vacio.
-     */
-    void creacionTablero();
+
     /*
      * pre: juego no iniciado
      * post: inicia el juego c
@@ -87,10 +84,24 @@ public:
      * post:
      */
     void obtenerTablero();
+
     /*
      * pre:
      * post:
      */
+    void cargarCeldasUsuario();
+    /*
+     * pre:
+     * post:nos devulve verdadero o falso si cumple con el rafngo de celulas vivas.
+     */
+    void  verificadorEnRango(int limiteinferior, int limiteSuperior, int *ingresoUsuario);
+    /*
+     * pre:
+     * post:devuelve el maximo entre la dimensiones del tablero.
+     */
+    int maxCantCelulasVivas();
+
+    void cargarPosicionesyOtroParametros();
 };
 
 

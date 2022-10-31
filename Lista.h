@@ -16,10 +16,11 @@ template <class T> class Lista {
 private:
 
     Nodo<T>* primero;
+    Nodo<T>* ultimo;
 
     unsigned int tamanio;
 
-    Nodo<T>* cursor;
+    Nodo<T>* cursor;//cursor = auxiliar
 
 public:
 
@@ -45,29 +46,12 @@ public:
     unsigned int contarElementos();
 
     /*
+    * pre: laposicion puede pertenecer al intevalo:: [1, contarElementos() + 1], o puede estar vacia
     * post: agrega el elemento al final de la Lista, en la posición:
-    *       contarElementos() + 1.
+    *       contarElementos() + 1, en una posicion indicada
     */
-    void agregar(T elemento);
+    void insertarElemento(T elemento);
 
-    /*
-     * pre : posición pertenece al intervalo: [1, contarElementos() + 1]
-         * post: agrega el elemento en la posición indicada.    *
-    *
-     * por ejemplo:
-    *
-    * ( A, B, C )
-    *   1  2  3
-    * y
-    * se hace agregar(Z,2)
-    * entonces queda
-    *
-    * (A, Z, B, C)
-         *  1  2  3  4
-         *
-         *
-         */
-    void agregar(T elemento, unsigned int posicion);
 
         /*
          * post: agrega todos los elementos de otraLista
@@ -79,7 +63,7 @@ public:
          * pre : posición pertenece al intervalo: [1, contarElementos()]
          * post: devuelve el elemento en la posición indicada.
          */
-    T obtener(unsigned int posicion);
+    T obtenerSegunPosicionDato(unsigned int posicion);
 
         /*
          * pre : posicioó pertenece al intervalo: [1, contarElementos()]
@@ -92,7 +76,7 @@ public:
          * pre : posición pertenece al intervalo: [1, contarElementos()]
          * post: remueve de la Lista el elemento en la posición indicada.
          */
-    void remover(unsigned int posicion);
+    void eliminarDatosLista( int posicion);
 
         /*
          * post: deja el cursor de la Lista preparado para hacer un nuevo
@@ -124,6 +108,18 @@ public:
          * post: libera los recursos asociados a la Lista.
          */
     ~Lista();
+    /*
+     * pre:
+     * post:
+     */
+    int getTamanioLista();
+
+    /*
+     * pre:
+     * post:devuelve el contenido de la lista.
+     */
+    void imprimirLista();
+
 private:
 
         /*
@@ -138,6 +134,7 @@ template<class T> Lista<T>::Lista() {
     this->primero = NULL;
     this->tamanio = 0;
     this->cursor = NULL;
+    this->ultimo = NULL;
 }
 
 template<class T> Lista<T>::Lista(Lista<T>& otraLista) {
@@ -147,7 +144,7 @@ template<class T> Lista<T>::Lista(Lista<T>& otraLista) {
     this->cursor = NULL;
 
         /* copia los elementos de otraLista */
-    this->agregar(otraLista);
+    this->insertarElemento(otraLista);
 }
 
 template<class T> bool Lista<T>::estaVacia() {
@@ -160,52 +157,47 @@ template<class T> unsigned int Lista<T>::contarElementos() {
     return this->tamanio;
 }
 
-template<class T> void Lista<T>::agregar(T elemento) {
+template<class T> void Lista<T>::insertarElemento(T elemento) {
+    Nodo<T> *nuevoElemento = new Nodo<T>(elemento);
 
-    this->agregar(elemento, this->tamanio + 1);
-}
-
-template<class T> void Lista<T>::agregar(T elemento, unsigned int posicion) {
-
-    if ((posicion > 0) && (posicion <= this->tamanio + 1)) {
-
-        Nodo<T>* nuevo = new Nodo<T>(elemento);
-
-        if (posicion == 1) {
-
-            nuevo->cambiarSiguiente(this->primero);
-            this->primero = nuevo;
-        }
-        else {
-
-            Nodo<T>* anterior = this->obtenerNodo(posicion - 1);
-            nuevo->cambiarSiguiente(anterior->obtenerSiguiente());
-            anterior->cambiarSiguiente(nuevo);
-        }
-
-        this->tamanio++;
-        /* cualquier recorrido actual queda invalidado */
-        this->iniciarCursor();
+    if( (primero == NULL) && (ultimo == NULL) ){
+        //primero apunta al nuevo elemento
+        primero = nuevoElemento;
     }
+    else{
+        ultimo->cambiarSiguiente(nuevoElemento);
+    }
+    ultimo = nuevoElemento;
+    tamanio++;
 
 }
+
+
 
 template<class T> void Lista<T>::agregar(Lista<T> &otraLista) {
 
     otraLista.iniciarCursor();
     while (otraLista.avanzarCursor()) {
-        this->agregar(otraLista.obtenerCursor());
+        this->insertarElemento(otraLista.obtenerCursor());
     }
 }
 
-template<class T> T Lista<T>::obtener(unsigned int posicion) {
-    std::cout << posicion<<endl;
-
-
-
-
-    return this->obtenerNodo(posicion)->obtenerDato();
+template<class T> T Lista<T>::obtenerSegunPosicionDato(unsigned int posicion) {
+    Nodo<T> * aux = primero;
+    int cont = 0;
+    if((posicion >= tamanio) ){
+        return NULL;
+    }
+    while ((aux != NULL) && (cont != posicion)){
+        aux = aux->obtenerSiguiente();
+        cont++;
+    }
+    if(aux != NULL){
+        return aux->obtenerDato();
+    }
+    return NULL;
 }
+
 
 template<class T> void Lista<T>::asignar(T elemento, unsigned int posicion) {
 
@@ -215,34 +207,48 @@ template<class T> void Lista<T>::asignar(T elemento, unsigned int posicion) {
     }
 }
 
-template<class T> void Lista<T>::remover(unsigned int posicion) {
 
-   if ((posicion > 0) && (posicion <= this->tamanio)) {
-
-        Nodo<T>* removido;
-
-        if (posicion == 1) {
-
-           removido = this->primero;
-                this->primero = removido->obtenerSiguiente();
-
-        }
-        else {
-            Nodo<T>* anterior = this->obtenerNodo(posicion - 1);
-            removido = anterior->obtenerSiguiente();
-            anterior->cambiarSiguiente(removido->obtenerSiguiente());
-        }
-
-        delete removido;
-        this->tamanio--;
-
-            /* cualquier recorrido actual queda invalidado */
-        this->iniciarCursor();
+template<class T> void Lista<T>::eliminarDatosLista( int posicion) {
+    if((posicion >= tamanio) || (posicion < 0) || tamanio == 0 ){
+        return;
     }
+    if( posicion == 0 ){
+        Nodo<T>*aux = primero->getSig();
+        Nodo<T>* removido = primero;
+        delete removido; // ver
+        primero = aux;
+    }
+    else if(posicion == tamanio - 1){
+        Nodo<T>* aux = primero;
+        while (aux->getSig() != ultimo){
+            aux = aux->getSig();
+        }
+        Nodo<T>* removido = ultimo;
+        delete ultimo;
+        ultimo  = aux;
+        ultimo->setSig(NULL);
+    }
+    else {
+        int cont = 0;
+        Nodo<T>* aux= primero;
+        while (cont != posicion -1){
+            aux = aux->getSig();
+            cont++;
+        }
+        Nodo<T>* aux2 = aux->getSig()->getSig();
+        Nodo<T>*removido = aux->getSig();
+        delete removido;
+        aux->setSig(aux2);
+    }
+    tamanio--;
+
 }
+
 template<class T> void Lista<T>::iniciarCursor() {
 
      this->cursor = NULL;
+
+
 }
 
 template<class T> bool Lista<T>::avanzarCursor() {
@@ -257,9 +263,11 @@ template<class T> bool Lista<T>::avanzarCursor() {
             this->cursor = this->cursor->obtenerSiguiente();
     }
 
+
     /* pudo avanzar si el cursor ahora apunta a un nodo */
     return (this->cursor != NULL);
 }
+
 
 template<class T> T Lista<T>::obtenerCursor() {
 
@@ -274,14 +282,14 @@ template<class T> T Lista<T>::obtenerCursor() {
 }
 
 template<class T> Lista<T>::~Lista() {
-
-    while (this->primero != NULL) {
-
-            Nodo<T>* aBorrar = this->primero;
-        this->primero = this->primero->obtenerSiguiente();
-
-        delete aBorrar;
+    int i = 0;
+    //Lo meto en una varible auxiiar para que no cambie(back up)
+    int tamanioOrigin = tamanio;
+    while ( i < tamanioOrigin){
+        eliminarDatosLista(0);
+        i++;
     }
+
 }
 template<class T> Nodo<T>* Lista<T>::obtenerNodo(unsigned int posicion) {
 
@@ -294,10 +302,16 @@ template<class T> Nodo<T>* Lista<T>::obtenerNodo(unsigned int posicion) {
         return actual;
 }
 
+template<class T> int Lista<T>::getTamanioLista(){
+    return tamanio;
+}
+template <class T> void Lista<T>::imprimirLista(){
+    Nodo<T>* aux = primero;
+    while ( aux != NULL){
+        std::cout <<  aux->getDato()<<std::endl;
+        aux = aux->getSig();
+    }
 
-
-
-
-
+}
 
 #endif //EJERCICIO_1_LISTA_H

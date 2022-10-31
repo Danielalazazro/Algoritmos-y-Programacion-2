@@ -46,7 +46,6 @@ public:
      * post: devuelve el siguiente Nodo.
      */
     Nodo<T>* obtenerSiguiente() {
-
         return this->siguiente;
     }
 
@@ -57,6 +56,7 @@ public:
 
         this->siguiente = nuevoSiguiente;
     }
+    ~Nodo(){}
 };
 
 

@@ -2,36 +2,50 @@
 #include "Celda.h"
 #include <iostream>
 #include <stdlib.h>
-#include <iostream>
+
 
 using namespace std;
 Celda::Celda() {
+    posicionX = 0;
+    posicionY = 0;
+    posicionZ = 0;
 
+    estadoDeCelda = 1 + rand() % 5;
+}
+Celda::Celda(int filaIngresa, int columnaIngresada, int profundidadIngresada){
+   this->posicionX = filaIngresa;
+   this->posicionY = columnaIngresada;
+   this->posicionZ = profundidadIngresada;
+   this->celula = new Celula();
+   this->celdasAdyacentes = new Lista<Celda*> ;
+    estadoDeCelda = 1 + rand() % 5;
+}
+int Celda::getPosX(){
+    return posicionX;
+}
+int Celda::getPosY() {
+    return posicionY;
+}
+int Celda::getPosZ(){
+    return posicionZ;
 }
 
-void Celda::setyAplicarConportamiento() {
+Lista<Celda*>* Celda::getCeldasAdyacentes(){
+    return celdasAdyacentes;
+}
 
-        estadoDeCelda = 1 + rand() % 5;
+void Celda::aplicarConportamiento() {
+
         if (estadoDeCelda == 1){
             aplicarEnvenenamiento();
         }
-        else if (estadoDeCelda == 2){
-            aplicarContaminacion();
-        }
+
         else if (estadoDeCelda == 3){
             aplicarPortal();
         }
 
-        else if (estadoDeCelda == 5){
-            aplicarRadioactividad();
-        }
 }
 
-Celda::Celda(int columnaIngresada, int filaIngresada, int profundidadIngresada) {
-
-    this->celula = new Celula();
-
-}
 void Celda::setCelula(Celula *celulaIngresada) {
 
     delete celula;
@@ -51,21 +65,33 @@ void Celda::aplicarEnvenenamiento(){
     celula->matarUnGen();
 }
 
-void Celda::aplicarContaminacion(){
-    celula->matarCelula();
-}
+
 
 void Celda::aplicarPortal(){
 
+    celdasAdyacentes->iniciarCursor();
+    while(celdasAdyacentes->avanzarCursor() ){
+        if(celdasAdyacentes->obtenerCursor()->obtenerCelula()->haNacido()){
+            revivirCelula();
+        }
+    }
 }
 
-void Celda::aplicarRadioactividad() {
 
+
+int Celda::obtenerCantCelVivasAdy(){
+    int cantCelVivas = 0;
+    celdasAdyacentes->iniciarCursor();
+    while (celdasAdyacentes->avanzarCursor()){
+        if(celdasAdyacentes->obtenerCursor()->obtenerCelula()->estaViva()){
+            cantCelVivas++;
+        }
+    }
+    return cantCelVivas;
 }
 
 
 
-bool Celda::tieneVecino(int ancho, int alto, int profundidad) {}
 
 Celda::~Celda(){
 
@@ -73,18 +99,43 @@ Celda::~Celda(){
 
 bool Celda::tieneEstadoProcreadora() {
 
-    return(estadoDeCelda == 3);
+    return(estadoDeCelda == 4);
 
 }
 
+void Celda::agregarAdyacente(Celda *unaCelda) {
+    celdasAdyacentes->insertarElemento(unaCelda);
+
+}
+
+void Celda::imprimirCelda() {
+    cout << "estadoActual de celda:  "<< estadoDeCelda ;
+    cout << "  posX: " << posicionX << "  posY: " <<posicionY << "  posZ: " << posicionZ<< endl;
+
+}
+
+void Celda::revivirCelula() {
+    celdasAdyacentes->iniciarCursor();
+    while (celdasAdyacentes->avanzarCursor()){
+        if(celdasAdyacentes->obtenerCursor()->obtenerCelula()->estaMuerta()){
+            celdasAdyacentes->obtenerCursor()->obtenerCelula()->revivir();
+            return;
+        }
+    }
+
+}
+
+int Celda::getEstado() {
+
+    return estadoDeCelda;
+}
+
+bool Celda::tieneEstadoContaminada() {
+    return (estadoDeCelda == 2);
+}
+
+void Celda::setNuevoEstado() {
+    estadoDeCelda = 1 + rand() % 5;
+}
 
 
-
-/*
- *     int contaminada;//estado = 1:celda contaminada
-    int envenenada;//estado = 2 :celda envenenada
-    int procreadora;//estade = 3:celda preocreadora
-    int portal;//estado = 4:celda portal
-    //estado = 5 :celda radioactiva
-    int estadoDeCelda;
- */
