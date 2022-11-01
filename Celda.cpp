@@ -9,7 +9,6 @@ Celda::Celda() {
     posicionX = 0;
     posicionY = 0;
     posicionZ = 0;
-
     estadoDeCelda = 1 + rand() % 5;
 }
 Celda::Celda(int filaIngresa, int columnaIngresada, int profundidadIngresada){
@@ -48,7 +47,7 @@ void Celda::aplicarConportamiento() {
 
 void Celda::setCelula(Celula *celulaIngresada) {
 
-    delete celula;
+
     celula = celulaIngresada;
 }
 
@@ -94,7 +93,8 @@ int Celda::obtenerCantCelVivasAdy(){
 
 
 Celda::~Celda(){
-
+    delete celdasAdyacentes;
+    delete celula;
 }
 
 bool Celda::tieneEstadoProcreadora() {
@@ -109,7 +109,7 @@ void Celda::agregarAdyacente(Celda *unaCelda) {
 }
 
 void Celda::imprimirCelda() {
-    cout << "estadoActual de celda:  "<< estadoDeCelda ;
+    cout << "estadoActual de tableroCelda:  "<< estadoDeCelda ;
     cout << "  posX: " << posicionX << "  posY: " <<posicionY << "  posZ: " << posicionZ<< endl;
 
 }

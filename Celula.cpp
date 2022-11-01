@@ -28,7 +28,7 @@ void Celula::setearCargaGeneticaUsuario(){
 void Celula::setearCargaGeneticaAleatoria(){
     arrayGen[0] = Gen(rand() % maximaCargaGenetica);
     arrayGen[1] = Gen(rand() % maximaCargaGenetica);
-    arrayGen[3] = Gen(rand() % maximaCargaGenetica);
+    arrayGen[2] = Gen(rand() % maximaCargaGenetica);
 }
 int Celula::obtenerCargaGeneticaPredominante()
 {
@@ -53,7 +53,6 @@ void Celula::dibujar(){
     else{
         std::cout<<"o";
     }
-
 }
 
 void Celula::revivir(){
@@ -107,6 +106,7 @@ void Celula::heredarCargaGenetica(Lista<Celula *> *celulasVivas, int estadoCelda
     this->arrayGen[0] =  nuevoArrayGen[0];
     this->arrayGen[1] = nuevoArrayGen[1];
     this->arrayGen[2] = nuevoArrayGen[2];
+
 
 }
 

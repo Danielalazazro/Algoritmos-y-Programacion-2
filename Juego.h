@@ -7,7 +7,7 @@
 
 #include "Tablero.h"
 static const unsigned int maximaCelulasVecinasAdy = 26;
-static const unsigned int minimoCantCelulaVivas = 8;
+static const unsigned int minimoCantCelulaVivas = 2;
 class Juego {
 private:
 
@@ -27,13 +27,13 @@ public:
      */
     Juego();
     /*
-     * pre:  Necesita  como parametros el alto , el ancho y la posicionZ del tablero.
-     * post: Devulve la dimensiones del tablero del juego
+     * pre:  Necesita  como parametros el alto , el ancho y la posicionZ del tableroCelda.
+     * post: Devulve la dimensiones del tableroCelda del juego
      */
     void cargarDimensionesDelTableroUsuario();
     /*
      * pre:
-     * post:Destruye el tablero
+     * post:Destruye el tableroCelda
      */
     ~Juego();
     /*
@@ -43,7 +43,7 @@ public:
     int obtenerModoJuego();
     /*
      * pre:ingresa el modo de juego.
-     * post:nos devuelve las dimensiones del tablero con las dimensiones aleatorias.
+     * post:nos devuelve las dimensiones del tableroCelda con las dimensiones aleatorias.
      */
     void cargaDeDimensionesDeTableroAleatoria();
 
@@ -54,7 +54,7 @@ public:
     void iniciarJuego();
     /*
      * pre:el juego debe estar iniciado
-     * post: el juego de carga con las celulas en el tablero y continua
+     * post: el juego de carga con las celulas en el tableroCelda y continua
      */
     void continuarJuego();
     /*
@@ -75,8 +75,8 @@ public:
      */
     void verificarCargasCelulasVecinasSigaViva(int limiteSigaViva, int *cantidadCelulasSigaViva );
     /*
-     * pre: recibe un tablero
-     * post: asigna al tablero algunos atributos.
+     * pre: recibe un tableroCelda
+     * post: asigna al tableroCelda algunos atributos.
      */
     void setearTablero(int cantidadCelulas);
     /*
@@ -97,7 +97,7 @@ public:
     void  verificadorEnRango(int limiteinferior, int limiteSuperior, int *ingresoUsuario);
     /*
      * pre:
-     * post:devuelve el maximo entre la dimensiones del tablero.
+     * post:devuelve el maximo entre la dimensiones del tableroCelda.
      */
     int maxCantCelulasVivas();
 

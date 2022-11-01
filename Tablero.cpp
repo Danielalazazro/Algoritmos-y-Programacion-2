@@ -15,28 +15,28 @@ Celda* Tablero::obtenerCelda(int posicionZ , int posicionX, int poscionY ){
     //cout << posicionZ;
     //cout <<posicionX;
     //cout << posicionY;
-     return this->tablero->obtenerSegunPosicionDato(posicionZ)->obtenerSegunPosicionDato(
+    return this->tableroCelda->obtenerSegunPosicionDato(posicionZ)->obtenerSegunPosicionDato(
             posicionX)->obtenerSegunPosicionDato(poscionY);
 }
 
 void Tablero::asignarValoresAleatoria(int *profundiaRandom, int *filaRandom, int* columnaRandom ){
-   *profundiaRandom = rand() % cantidadMaximaPosZ;
-   *filaRandom = rand() % cantidadMaximaPosY;
-   *columnaRandom = rand() % cantidadMaximaPosX;
+    *profundiaRandom = rand() % cantidadMaximaPosZ;
+    *filaRandom = rand() % cantidadMaximaPosY;
+    *columnaRandom = rand() % cantidadMaximaPosX;
 
 }
 
 void Tablero::verificarIngresoUsuario(int limiteSuperior, int* ingresoUsuario){
-    //*numero = 10;
-    *ingresoUsuario -=1;
-    std::cout << "Ingrese un valor entre 0 y limite superior "<<limiteSuperior <<": "<<endl;
-    while( (*ingresoUsuario > limiteSuperior - 1) || (*ingresoUsuario <= 0) ){
+    *ingresoUsuario = -1;
+    std::cout << "Que debe estar entre 1 y limite superior "<<limiteSuperior <<": "<<endl;
+    while( (*ingresoUsuario > limiteSuperior ) || (*ingresoUsuario <= 0) ){
         cin >> *ingresoUsuario;
-        if((*ingresoUsuario > limiteSuperior - 1 ) ||(*ingresoUsuario <= 0)){
+        if((*ingresoUsuario > limiteSuperior  ) ||(*ingresoUsuario <= 0)){
             std::cout<<"ERROR RANGO INVALIDO\n";
-            std::cout << "Ingrese un valor entre 0 y limite superior "<<limiteSuperior <<": "<<endl;
+            std::cout << "Que debe estar entre 1 y limite superior "<<limiteSuperior <<": "<<endl;
         }
     }
+    *ingresoUsuario = *ingresoUsuario -1;
 }
 void Tablero::cargarCelulasVivasyCargaRandom(){
 
@@ -59,11 +59,11 @@ void Tablero::cargarCelulaUsuario(int modoJuego) {
     int i = 0;
     while ( i < cantidadCelulaVivasActuales ){
 
-        cout << "Ingrese la posicionX de la celda con la celula viva: ";
+        cout << "Ingrese la posicionX de la tableroCelda con la celula viva: ";
         verificarIngresoUsuario(cantidadMaximaPosX, &posicionX);
-        cout << "Ingrese la posicionY de la celda con la celula viva: ";
+        cout << "Ingrese la posicionY de la tableroCelda con la celula viva: ";
         verificarIngresoUsuario(cantidadMaximaPosY, &posicionY);
-        cout << "Ingrese la posicionZ de la celda con la celula viva: ";
+        cout << "Ingrese la posicionZ de la tableroCelda con la celula viva: ";
         verificarIngresoUsuario(cantidadMaximaPosZ, &posicionZ);
 
         Celda* celdaUsuario = obtenerCelda(posicionX,posicionY, posicionZ);
@@ -78,9 +78,9 @@ void Tablero::cargarCelulaUsuario(int modoJuego) {
             i++;
         }
         else{
-            cout << "Ingrese otra posicion de celda para la celula viva";
+            cout << "ERROR POSCION OCUPADA INGRESE OTRA POSICION DE LA CELDA CON CELULA VIVA \n";
         }
-
+        //para que garantizarnos que entre al while
     }
 
 }
@@ -99,40 +99,36 @@ int Tablero::obtenerProfundidad() {
 Tablero::Tablero(int cantidadFila, int cantidadColumnas, int cantidaProfundiad) {
     //creo todas las celdas
 
-    this->tablero = new Lista< Lista <Lista<Celda*> *> *>();
+    this->tableroCelda = new Lista< Lista <Lista<Celda*> *> *>();
     this->cantidadMaximaPosX = cantidadFila;
     this->cantidadMaximaPosY = cantidadColumnas;
     this->cantidadMaximaPosZ = cantidaProfundiad;
-
-    // tablero->obtener(profundida4)->obtener(fila7)->obtenerSegunPosicionDato(columna9)
+    // tableroCelda->obtener(profundida4)->obtener(fila7)->obtenerSegunPosicionDato(columna9)
     for(int i = 0; i < this->cantidadMaximaPosZ; i++){
         Lista<Lista<Celda*>*>* columna = new Lista<Lista<Celda*>*>();
         for(int j = 0; j < this->cantidadMaximaPosX ; j++){
             Lista<Celda*>* fila = new Lista< Celda* >();
             for(int k = 0; k < this->cantidadMaximaPosY; k++){
-                    Celda* celda = new Celda(j, k, i);
-                    //celda
+                Celda* celda = new Celda(j, k, i);
+                //tableroCelda
                 fila->insertarElemento(celda);
             }
             columna->insertarElemento(fila);
         }
-        this->tablero->insertarElemento(columna);
+        this->tableroCelda->insertarElemento(columna);
     }
-    //Asina los vecinos
-    //Recorro el tablero
-    //Me define la posicionX
-    /*for(int i = 0; i < cantidadMaximaPosX; i++ ){
-        for(int j = 0; j < cantidadMaximaPosY; j++ ){
-            for(int k = 0; k <  cantidadMaximaPosZ; k++){
-                Celda* celda = obtenerCelda( i, j, k);
-                asiganrCeldasAdayacentes( celda);
+    for(int i = 0; i < cantidadMaximaPosX; i++){
+        for(int j = 0; j < cantidadMaximaPosY ; j++){
+            for(int k = 0; k < cantidadMaximaPosZ ; k++){
+                asignarCeldasAdayacentes(obtenerCelda(k, i, j));
             }
         }
-    }*/
+    }
+
 }
 
 
-void Tablero::asiganrCeldasAdayacentes(Celda* unaCelda) {
+void Tablero::asignarCeldasAdayacentes(Celda* unaCelda) {
     Celda *nuevaCelda;
     if (unaCelda->getPosX() - 1 >= 0) {
         nuevaCelda = obtenerCelda(unaCelda->getPosZ(), unaCelda->getPosX() - 1, unaCelda->getPosY());
@@ -164,25 +160,25 @@ void Tablero::asiganrCeldasAdayacentes(Celda* unaCelda) {
     }
 
     if ((unaCelda->getPosX() + 1 < cantidadMaximaPosX) && (unaCelda->getPosZ() + 1 < cantidadMaximaPosZ)) {
-       nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() + 1, unaCelda->getPosY());
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() + 1, unaCelda->getPosY());
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     if ((unaCelda->getPosY() + 1 < cantidadMaximaPosX) && (unaCelda->getPosZ() + 1 < cantidadMaximaPosZ)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX(), unaCelda->getPosY() + 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX(), unaCelda->getPosY() + 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     //negativos
     if ((unaCelda->getPosX() - 1 >= 0) && (unaCelda->getPosY() - 1 >= 0)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ(), unaCelda->getPosX() - 1, unaCelda->getPosY() - 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ(), unaCelda->getPosX() - 1, unaCelda->getPosY() - 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
 
     if ((unaCelda->getPosX() - 1 >= 0) && (unaCelda->getPosZ() - 1 >= 0)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() - 1, unaCelda->getPosY());
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() - 1, unaCelda->getPosY());
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     if ((unaCelda->getPosY() - 1 >= 0) && (unaCelda->getPosZ() - 1 >= 0)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX(), unaCelda->getPosY() - 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX(), unaCelda->getPosY() - 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     //convivno negativos con positivos
@@ -195,81 +191,71 @@ void Tablero::asiganrCeldasAdayacentes(Celda* unaCelda) {
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     if ((unaCelda->getPosX() + 1 < cantidadMaximaPosX) && (unaCelda->getPosY() - 1 >= 0)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ(), unaCelda->getPosX() + 1, unaCelda->getPosY() - 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ(), unaCelda->getPosX() + 1, unaCelda->getPosY() - 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     if ((unaCelda->getPosY() + 1 < cantidadMaximaPosX) && (unaCelda->getPosZ() - 1 >= 0)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX(), unaCelda->getPosY() + 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX(), unaCelda->getPosY() + 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     if ((unaCelda->getPosX() + 1 < cantidadMaximaPosX) && (unaCelda->getPosZ() - 1 >= 0)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() + 1, unaCelda->getPosY());
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() + 1, unaCelda->getPosY());
         unaCelda->agregarAdyacente(nuevaCelda);
     }
 
     //verificacion de 3
     if ((unaCelda->getPosX() + 1 < cantidadMaximaPosX) && (unaCelda->getPosY() + 1 < cantidadMaximaPosY) &&
         (unaCelda->getPosZ() + 1 < cantidadMaximaPosZ)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() + 1, unaCelda->getPosY() + 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() + 1, unaCelda->getPosY() + 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     if ((unaCelda->getPosX() - 1 >= 0) && (unaCelda->getPosY() - 1 >= 0) && (unaCelda->getPosZ() - 1 >= 0)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() - 1, unaCelda->getPosY() - 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() - 1, unaCelda->getPosY() - 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     //Convinacion de 3 cifras de negativos y positivos
     if ((unaCelda->getPosX() - 1 >= 0) && (unaCelda->getPosY() + 1 < cantidadMaximaPosY) &&
         (unaCelda->getPosZ() - 1 >= 0)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() - 1, unaCelda->getPosY() + 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() - 1, unaCelda->getPosY() + 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     //
     if ((unaCelda->getPosX() + 1 < cantidadMaximaPosX) && (unaCelda->getPosY() + 1 < cantidadMaximaPosY) &&
         (unaCelda->getPosZ() - 1 >= 0)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() + 1, unaCelda->getPosY() + 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() + 1, unaCelda->getPosY() + 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     //
     if ((unaCelda->getPosX() + 1 < cantidadMaximaPosX) && (unaCelda->getPosY() - 1 >= 0) &&
         (unaCelda->getPosZ() - 1 >= 0)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() + 1, unaCelda->getPosY() - 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() - 1, unaCelda->getPosX() + 1, unaCelda->getPosY() - 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     //
     if ((unaCelda->getPosX() - 1 >= 0) && (unaCelda->getPosY() - 1 >= 0) &&
         (unaCelda->getPosZ() + 1 < cantidadMaximaPosZ)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() - 1, unaCelda->getPosY() - 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() - 1, unaCelda->getPosY() - 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     //
     if ((unaCelda->getPosX() - 1 >= 0) && (unaCelda->getPosY() + 1 < cantidadMaximaPosY) &&
         (unaCelda->getPosZ() + 1 < cantidadMaximaPosZ)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() - 1, unaCelda->getPosY() + 1);
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() - 1, unaCelda->getPosY() + 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     //
     if((unaCelda->getPosX() + 1 < cantidadMaximaPosX) && (unaCelda->getPosY() - 1 < cantidadMaximaPosY) &&
-          (unaCelda->getPosZ() + 1 < cantidadMaximaPosZ)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() + 1, unaCelda->getPosY() - 1);
+       (unaCelda->getPosZ() + 1 < cantidadMaximaPosZ)) {
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() + 1, unaCelda->getPosY() - 1);
         unaCelda->agregarAdyacente(nuevaCelda);
     }
     //
     if((unaCelda->getPosX() - 1 >= 0) && (unaCelda->getPosZ() + 1 < cantidadMaximaPosZ)) {
-        Celda *nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() - 1, unaCelda->getPosY());
+        nuevaCelda = obtenerCelda(unaCelda->getPosZ() + 1, unaCelda->getPosX() - 1, unaCelda->getPosY());
         unaCelda->agregarAdyacente(nuevaCelda);
     }
 }
-/*
- * void Tablero::imprimirTableros(){
-    cout << " \nTablero Juego: " << endl;
-    for(int i = 0; i < MAX_FILA; i++ ){
-        for (int j = 0; j < MAX_COLUMNA ; j++){
-            cout<< tablero[i][j] ;
-        }
-        cout << "\n";
-    }
-}
- */
+
 void Tablero::imprimirTablero(){
 
     cout << "cantidad de filas :"<<cantidadMaximaPosX << "\t";
@@ -281,7 +267,7 @@ void Tablero::imprimirTablero(){
     cout << "cantidad de celulas para seguir viva 1:"<<cantidadCelulasVecinasParaSeguirViva1 << "\t";
     cout << "cantidad de celulas para seguir viva 2:"<< cantidadCelulaVecinasParaSeguirViva2 << "\t"<<"\n";
     for( int prof = 0; prof<3; prof++){
-        cout << "imprime el tablero en  z = "<< prof << endl;
+        cout << "imprime el tableroCelda en  z = "<< prof << endl;
         for(int i = 0; i < this->cantidadMaximaPosX; i++) {
             for (int j = 0; j < this->cantidadMaximaPosY; j++) {
                 Celda *celda = obtenerCelda(prof, i, j);
@@ -311,7 +297,7 @@ void Tablero::actualizarTablero(){
                 if(obtenerCelda(k,i,j)->tieneEstadoProcreadora()){
                     setCantCelulasVivasParaNacer();
                 }
-                if(obtenerCelda(k,i,j)->tieneEstadoContaminada()){
+                if((obtenerCelda(k,i,j)->tieneEstadoContaminada()) && (obtenerCelda(k, i, j)->obtenerCelula()->estaViva())){
                     obtenerCelda(k,i,j)->obtenerCelula()->matarCelula();
                     cantidadCelulaVivasActuales--;
                 }
@@ -343,8 +329,43 @@ int Tablero::minimoDeLasDimensionesTablero(){
     return min2;
 }
 
+/*Tablero::Tablero(int cantidadFila, int cantidadColumnas, int cantidaProfundiad) {
+    //creo todas las celdas
 
-Tablero::~Tablero() {}
+    this->tableroCelda = new Lista< Lista <Lista<Celda*> *> *>();
+    this->cantidadMaximaPosX = cantidadFila;
+    this->cantidadMaximaPosY = cantidadColumnas;
+    this->cantidadMaximaPosZ = cantidaProfundiad;
+    // tableroCelda->obtener(profundida4)->obtener(fila7)->obtenerSegunPosicionDato(columna9)
+    for(int i = 0; i < this->cantidadMaximaPosZ; i++){
+        Lista<Lista<Celda*>*>* columna = new Lista<Lista<Celda*>*>();
+        for(int j = 0; j < this->cantidadMaximaPosX ; j++){
+            Lista<Celda*>* fila = new Lista< Celda* >();
+            for(int k = 0; k < this->cantidadMaximaPosY; k++){
+                Celda* celda = new Celda(j, k, i);
+                //tableroCelda
+                fila->insertarElemento(celda);
+            }
+            columna->insertarElemento(fila);
+        }
+        this->tableroCelda->insertarElemento(columna);
+    }
+}*/
+Tablero::~Tablero() {
+    //deletes de celdas;
+    for(int i = 0; i < this->cantidadMaximaPosZ; i++){
+        for(int j = 0; j < this->cantidadMaximaPosX ; j++){
+            for(int k = 0; k < this->cantidadMaximaPosY; k++){
+                delete this->tableroCelda->obtenerSegunPosicionDato(i)->obtenerSegunPosicionDato(j)->obtenerSegunPosicionDato(k);
+            }
+            delete this->tableroCelda->obtenerSegunPosicionDato(i)->obtenerSegunPosicionDato(j);
+        }
+        delete this->tableroCelda->obtenerSegunPosicionDato(i);
+    }
+
+
+    delete this->tableroCelda;
+}
 
 void Tablero::cargarParametrosRandom() {
     int minimo = minEntreFilaColumnaProfundidad();
@@ -364,41 +385,33 @@ void Tablero::setCantCelulasVivasActuale(int nuevaCantCelulas) {
     this->cantidadCelulaVivasActuales = nuevaCantCelulas;
 
 }
-/*
- *     for(int i = 0; i < this->cantidadMaximaPosZ; i++){
-        Lista<Lista<Celda*>*>* columna = new Lista<Lista<Celda*>*>();
-        for(int j = 0; j < this->cantidadMaximaPosX ; j++){
-            Lista<Celda*>* fila = new Lista< Celda* >();
-            for(int k = 0; k < this->cantidadMaximaPosY; k++){
-                    Celda* celda = new Celda(j, k, i);
-                    //celda
-                    fila->insertarElementos(celda);
-            }
-            columna->insertarElementos(fila);
-        }
-        this->tablero->insertarElemento(columna);
-    }
- */
+
 void Tablero::aplicarLogicaDelJuego() {
     int cantCelVivas = 0;
-    Lista<Celula*>* unaListaCelulas ;
-    tablero->iniciarCursor();
+    //Lista<Celula*>* unaListaCelulas = new Lista<Celula*>();
+    tableroCelda->iniciarCursor();
     for(int i = 0; i < cantidadMaximaPosX; i++){
         for(int j = 0; j < cantidadMaximaPosY;j++){
             for(int k = 0; k < cantidadMaximaPosZ; k++){
+
                 Celda * unaCelda = obtenerCelda(k, i, j);
                 cantCelVivas = unaCelda->obtenerCantCelVivasAdy();
+                //Lista<Celula*>* unaListaCelulas = new Lista<Celula*>();
                 if((unaCelda->obtenerCelula()->estaMuerta()) && (cantCelVivas == cantidadCelulasVecinasParaNacer)){
+                    Lista<Celula*>* unaListaCelulas = new Lista<Celula*>();
                     unaCelda->obtenerCelula()->revivir();
                     int estadoCelda = unaCelda->getEstado();
-                    unaListaCelulas = obtenerCelulasVivasActuales(unaCelda->getCeldasAdyacentes());
+                    unaListaCelulas = obtenerCelulasVivasActuales(unaCelda->getCeldasAdyacentes() ,unaListaCelulas);
                     unaCelda->obtenerCelula()->heredarCargaGenetica(unaListaCelulas, estadoCelda);
                     cantidadCelulaVivasActuales ++;
+                    //tengo que eliminar la lista de celulas pedidad y luego correr con vangrind e implmentar bmp
+
+                    delete unaListaCelulas;
                 }
                 else if((unaCelda->obtenerCelula()->estaViva()) && (puedeMantenerseConVida(cantCelVivas))){
                     unaCelda->obtenerCelula()->revivir();
                 }
-                else{
+                else if( (unaCelda->obtenerCelula()->estaViva())  && not (puedeMantenerseConVida(cantCelVivas)) ){
                     unaCelda->obtenerCelula()->matarCelula();
                     cantidadCelulaVivasActuales--;
                 }
@@ -411,18 +424,15 @@ bool Tablero::puedeMantenerseConVida(int cantCelVivas) {
 
 }
 
-Lista<Celula*>* Tablero::obtenerCelulasVivasActuales(Lista<Celda *> *celdaAdyacentes) {
+Lista<Celula*>* Tablero::obtenerCelulasVivasActuales(Lista<Celda *> *celdaAdyacentes, Lista<Celula*>* listaCelulas) {
     celdaAdyacentes->iniciarCursor();
-    Lista<Celula*>* listaCelulas = new Lista<Celula*> ;
+
     while(celdaAdyacentes->avanzarCursor()){
         if (celdaAdyacentes->obtenerCursor()->obtenerCelula()->estaViva()){
             listaCelulas->insertarElemento(celdaAdyacentes->obtenerCursor()->obtenerCelula());
         }
     }
+
     return listaCelulas;
 
 }
-
-
-
-

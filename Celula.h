@@ -56,8 +56,8 @@ public:
      */
     void setearCargaGeneticaAleatoria();
     /*
-     * pre: recibe el tablero con celulas muertas
-     * post: devulve el tablero con las carga geneticas ingresadas por el usuario.
+     * pre: recibe el tableroCelda con celulas muertas
+     * post: devulve el tableroCelda con las carga geneticas ingresadas por el usuario.
      */
     void setearCargaGeneticaUsuario();
     /*

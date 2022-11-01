@@ -16,7 +16,7 @@ private:
 
     int cantidadMaximaPosZ;
 
-    Lista<Lista<Lista<Celda*>*>*>* tablero;
+    Lista<Lista<Lista<Celda*>*>*>* tableroCelda;
 
     int cantidadCelulaVivasActuales;
 
@@ -32,12 +32,12 @@ private:
 public:
     /*
      * pre:-
-     * post:Inicializo los atributos de la clase tablero.
+     * post:Inicializo los atributos de la clase tableroCelda.
      */
     Tablero();
     /*
      * pre: Los argumentos deben ser > 0
-     * post: Crea un tablero de dimensiones cantidadFilas x cantidad de columnas x cantidadMaximaPosZ = cantidad de celdas
+     * post: Crea un tableroCelda de dimensiones cantidadFilas x cantidad de columnas x cantidadMaximaPosZ = cantidad de celdas
      *      Te devulve una excepscion si no cumple con la precondicion.
      */
 
@@ -45,8 +45,8 @@ public:
 
     /*
      * pre: filaIngresada , columnaIngresada , profundidadIngresada debe ser mayor a cero y debe estar dentro de las dimensione
-     *      del tablero
-     * post:Retorna la posicion en memoria de la celda ubicado en las coordenadas introducidas.
+     *      del tableroCelda
+     * post:Retorna la posicion en memoria de la tableroCelda ubicado en las coordenadas introducidas.
      */
     Celda* obtenerCelda(int posicionZ, int posicionX, int poscionY);
 
@@ -58,7 +58,7 @@ public:
 
     /*
      * pre:
-     * post: Destruye la memoria pedida para el tablero , junto con las celdas que lo componen
+     * post: Destruye la memoria pedida para el tableroCelda , junto con las celdas que lo componen
      *       y pone todo los cojuntos de punteros a null.
      */
     virtual ~Tablero();
@@ -90,17 +90,17 @@ public:
     void  asignarValoresAleatoria(int *filaAleatoria, int *columnaAleatoria, int *profundidadAleatoria);
     /*
      * pre:
-     * post:Nos verifica el numero ingresado por el usuario este entre el rango de 1 a el maximo de la dimensiones del tablero
+     * post:Nos verifica el numero ingresado por el usuario este entre el rango de 1 a el maximo de la dimensiones del tableroCelda
      */
     void verificarIngresoUsuario(int limiteSuperior, int* ingresoUsuario);
     /*
-     * pre: el tablero esta inicialmente vacio
-     * post: nos devulve las celulas cargadas en ele tablero
+     * pre: el tableroCelda esta inicialmente vacio
+     * post: nos devulve las celulas cargadas en ele tableroCelda
      */
     void cargarCelulaUsuario(int modoJuego);
     /*
-     * pre: recibe el tablero sin  celulas.
-     * post: devuelve el tablero con celulas
+     * pre: recibe el tableroCelda sin  celulas.
+     * post: devuelve el tableroCelda con celulas
      */
     void cargarCelulasVivasyCargaRandom();
     /*
@@ -126,7 +126,7 @@ public:
     void setCantCelulasVivasParaNacer();
     /*
      * pre:
-     * post:nos devulve el maximo del las dimensiones del tablero.
+     * post:nos devulve el maximo del las dimensiones del tableroCelda.
      */
     int minimoDeLasDimensionesTablero();
     /*
@@ -135,10 +135,10 @@ public:
      */
     void setCantCelulasVivasParaNacer(int cantCelulasParaNacer, int cantCelulasParaSeguirViva1, int cantCelulasParaSeguirViva2);
     /*
-     * pre: el usuario debe ingresar las dimensiones del tablero
-     * post:devulve el analisis de con las celulas adyacentes a la celda a analizar.
+     * pre: el usuario debe ingresar las dimensiones del tableroCelda
+     * post:devulve el analisis de con las celulas adyacentes a la tableroCelda a analizar.
      */
-    void asiganrCeldasAdayacentes(Celda*unaCelda);
+    void asignarCeldasAdayacentes(Celda*unaCelda);
 
     void cargarParametrosRandom();
     /*
@@ -157,7 +157,7 @@ public:
 
     bool puedeMantenerseConVida(int vivas);
 
-    Lista<Celula*>* obtenerCelulasVivasActuales(Lista<Celda *> *pLista);
+    Lista<Celula*>* obtenerCelulasVivasActuales(Lista<Celda *> *pLista ,Lista<Celula*>* listaCelulas);
     /*
      * pre:
      * post:

@@ -61,7 +61,7 @@ public:
     void  aplicarRadioactividad();
     /*
      * pre:-
-     * post: cambia el estadoActual de la celda
+     * post: cambia el estadoActual de la tableroCelda
      */
     void setCelula(Celula* celulaIngresada);
     /*
@@ -88,7 +88,7 @@ public:
 
     /*
      * pre:
-     * post:destuye la celda
+     * post:destuye la tableroCelda
      */
     ~Celda();
 
@@ -135,11 +135,11 @@ public:
 
 //estadoActual qu epuede variar
 /*
-int contaminada;//estadoActual = 1:celda contaminada
-int envenenada;//estadoActual = 2 :celda envenenada
-int procreadora;//estade = 3:celda preocreadora
-int portal;//estadoActual = 4:celda portal
-//estadoActual = 5 :celda radioactiva
+int contaminada;//estadoActual = 1:tableroCelda contaminada
+int envenenada;//estadoActual = 2 :tableroCelda envenenada
+int procreadora;//estade = 3:tableroCelda preocreadora
+int portal;//estadoActual = 4:tableroCelda portal
+//estadoActual = 5 :tableroCelda radioactiva
 int estadoDeCelda;
 */
 

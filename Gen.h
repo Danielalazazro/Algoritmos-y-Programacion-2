@@ -23,7 +23,7 @@ public:
     Gen(unsigned int cargaGenetica);
     /*
      * pre:
-     * post:destruye el tablero creado con memoria dinamica.
+     * post:destruye el tableroCelda creado con memoria dinamica.
      */
     virtual ~Gen();
     /*

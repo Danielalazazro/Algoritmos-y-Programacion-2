@@ -169,7 +169,7 @@ template<class T> void Lista<T>::insertarElemento(T elemento) {
     }
     ultimo = nuevoElemento;
     tamanio++;
-
+   //En insertar elementos no van delete
 }
 
 
@@ -213,32 +213,32 @@ template<class T> void Lista<T>::eliminarDatosLista( int posicion) {
         return;
     }
     if( posicion == 0 ){
-        Nodo<T>*aux = primero->getSig();
+        Nodo<T>*aux = primero->obtenerSiguiente();
         Nodo<T>* removido = primero;
         delete removido; // ver
         primero = aux;
     }
     else if(posicion == tamanio - 1){
         Nodo<T>* aux = primero;
-        while (aux->getSig() != ultimo){
-            aux = aux->getSig();
+        while (aux->obtenerSiguiente() != ultimo){
+            aux = aux->obtenerSiguiente();
         }
         Nodo<T>* removido = ultimo;
         delete ultimo;
         ultimo  = aux;
-        ultimo->setSig(NULL);
+        ultimo->cambiarSiguiente(NULL);
     }
     else {
         int cont = 0;
         Nodo<T>* aux= primero;
         while (cont != posicion -1){
-            aux = aux->getSig();
+            aux = aux->obtenerSiguiente();
             cont++;
         }
-        Nodo<T>* aux2 = aux->getSig()->getSig();
-        Nodo<T>*removido = aux->getSig();
+        Nodo<T>* aux2 = aux->obtenerSiguiente()->obtenerSiguiente();
+        Nodo<T>*removido = aux->obtenerSiguiente();
         delete removido;
-        aux->setSig(aux2);
+        aux->cambiarSiguiente(aux2);
     }
     tamanio--;
 
@@ -308,8 +308,8 @@ template<class T> int Lista<T>::getTamanioLista(){
 template <class T> void Lista<T>::imprimirLista(){
     Nodo<T>* aux = primero;
     while ( aux != NULL){
-        std::cout <<  aux->getDato()<<std::endl;
-        aux = aux->getSig();
+        std::cout <<  aux->obtenerDato()<<std::endl;
+        aux = aux->obtenerSiguiente();
     }
 
 }
