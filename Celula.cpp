@@ -56,7 +56,9 @@ void Celula::dibujar(){
 }
 
 void Celula::revivir(){
-    estadoActual = 1;
+    if(estadoActual == 0){
+        estadoActual = 1;
+    }
 }
 
 void Celula::matarUnGen(){
@@ -87,35 +89,32 @@ bool Celula::estaMuerta() {
 }
 
 void Celula::heredarCargaGenetica(Lista<Celula *> *celulasVivas, int estadoCelda) {
-    Gen* nuevoArrayGen ;
+    int carga1, carga2, carga3;
     int modoCalcularCargas = 1 + rand() % 3;
     if(modoCalcularCargas == 1){
-        nuevoArrayGen = promedioDeCargas(celulasVivas);
+        promedioDeCargas(celulasVivas, &carga1, &carga2, &carga3);
     }
     else if(modoCalcularCargas == 2){
-        nuevoArrayGen = minimoDeCargas(celulasVivas);
+        minimoDeCargas(celulasVivas, &carga1, &carga2, &carga3);
     }
     else if(modoCalcularCargas == 3){
-        nuevoArrayGen = maximoDeCargas(celulasVivas);
+        maximoDeCargas(celulasVivas, &carga1, &carga2, &carga3);
     }
     if(estadoCelda == 5){
-        nuevoArrayGen[0].setCargaGenetica( sqrt( nuevoArrayGen[0].getCargaGenetica()));
-        nuevoArrayGen[1].setCargaGenetica( sqrt( nuevoArrayGen[1].getCargaGenetica()));
-        nuevoArrayGen[2].setCargaGenetica( sqrt( nuevoArrayGen[2].getCargaGenetica()));
+        carga1 = sqrt( carga1);
+        carga2 = sqrt( carga2);
+        carga3 = sqrt( carga3);
     }
-    this->arrayGen[0] =  nuevoArrayGen[0];
-    this->arrayGen[1] = nuevoArrayGen[1];
-    this->arrayGen[2] = nuevoArrayGen[2];
-
-
+    this->arrayGen[0] =  carga1;
+    this->arrayGen[1] = carga2;
+    this->arrayGen[2] = carga3;
 }
 
 Gen* Celula::getArrayGen(){
     return arrayGen;
 
 }
-Gen* Celula::promedioDeCargas(Lista<Celula *> *celulasVivas){
-    Gen unosGenes[3];
+void Celula::promedioDeCargas(Lista<Celula *> *celulasVivas, int *cargaGen1, int *cargaGen2, int *cargaGen3) {
     int i = 0, carga1 = 0, carga2 = 0, carga3 = 0;
     celulasVivas->iniciarCursor();
     while(celulasVivas->avanzarCursor()){
@@ -125,15 +124,14 @@ Gen* Celula::promedioDeCargas(Lista<Celula *> *celulasVivas){
         carga3 += genes[2].getCargaGenetica();
         i++;
     }
-    unosGenes[0] = Gen(carga1/i);
-    unosGenes[1] = Gen(carga2/i);
-    unosGenes[2] = Gen(carga3/i);
-    return unosGenes;
+    *cargaGen1 = carga1/i;
+    *cargaGen2 = carga2/i;
+    *cargaGen3 = carga3/i;
 }
-Gen* Celula::minimoDeCargas(Lista<Celula *> *celulasVivas){
 
-    Gen unosGenes[3];
-    int  carga1 = 10, carga2 = 10, carga3 = 10;
+void Celula::minimoDeCargas(Lista<Celula *> *celulasVivas, int *cargaGen1, int *cargaGen2, int *cargaGen3) {
+
+    int  carga1 = 255, carga2 = 255, carga3 = 255;
     celulasVivas->iniciarCursor();
     while(celulasVivas->avanzarCursor()){
         Gen* genes = celulasVivas->obtenerCursor()->getArrayGen();
@@ -142,13 +140,11 @@ Gen* Celula::minimoDeCargas(Lista<Celula *> *celulasVivas){
         carga3 = min((int) genes[2].getCargaGenetica() , carga3);
 
     }
-    unosGenes[0] = Gen(carga1);
-    unosGenes[1] = Gen(carga2);
-    unosGenes[2] = Gen(carga3);
-    return unosGenes;
+    *cargaGen1 = carga1;
+    *cargaGen2 = carga2;
+    *cargaGen3 = carga3;
 }
-Gen* Celula::maximoDeCargas(Lista<Celula *> *celulasVivas){
-    Gen unosGenes[3];
+void Celula::maximoDeCargas(Lista<Celula *> *celulasVivas, int *cargaGen1, int *cargaGen2, int *cargaGen3) {
     int  carga1 = 10, carga2 = 10, carga3 = 10;
     celulasVivas->iniciarCursor();
     while(celulasVivas->avanzarCursor()){
@@ -158,8 +154,12 @@ Gen* Celula::maximoDeCargas(Lista<Celula *> *celulasVivas){
         carga3 = max((int) genes[2].getCargaGenetica() , carga3);
 
     }
-    unosGenes[0] = Gen(carga1);
-    unosGenes[1] = Gen(carga2);
-    unosGenes[2] = Gen(carga3);
-    return unosGenes;
+    *cargaGen1 = carga1;
+    *cargaGen2 = carga2;
+    *cargaGen3 = carga3;
+}
+
+void Celula::antesVivaAhoraMuerta() {
+    estadoAnterior = 1;
+    estadoActual = 0;
 }

@@ -33,14 +33,14 @@ Lista<Celda*>* Celda::getCeldasAdyacentes(){
     return celdasAdyacentes;
 }
 
-void Celda::aplicarConportamiento() {
+void Celda::aplicarConportamiento(int *cantCelVivasAct) {
 
         if (estadoDeCelda == 1){
             aplicarEnvenenamiento();
         }
 
         else if (estadoDeCelda == 3){
-            aplicarPortal();
+            aplicarPortal(cantCelVivasAct);
         }
 
 }
@@ -66,23 +66,50 @@ void Celda::aplicarEnvenenamiento(){
 
 
 
-void Celda::aplicarPortal(){
+void Celda::aplicarPortal(int *cantCelVivas) {
 
-    celdasAdyacentes->iniciarCursor();
-    while(celdasAdyacentes->avanzarCursor() ){
-        if(celdasAdyacentes->obtenerCursor()->obtenerCelula()->haNacido()){
-            revivirCelula();
+    bool nacioCelula = false;
+    int i = 0;
+    int j = 0;
+    while ((i < 1) && (j < celdasAdyacentes->getTamanioLista())){
+        if( celdasAdyacentes->obtenerSegunPosicionDato(j)->obtenerCelula()->haNacido() ){
+            nacioCelula = true;
+            i++;
+        }
+        j++;
+    }
+    if(nacioCelula == false){
+        return;
+    }
+
+    i = 0, j = 0 ;
+
+    while(( i < 1  ) && ( j < celdasAdyacentes->getTamanioLista())){
+        if(celdasAdyacentes->obtenerSegunPosicionDato(j)->obtenerCelula()->estaMuerta()){
+            celdasAdyacentes->obtenerSegunPosicionDato(j)->obtenerCelula()->revivir();
+            (*cantCelVivas ) += 1;
+            i++;
+        }
+        j++;
+    }
+}
+void Celda::revivirCelula() {
+
+    for(int i = 0; i < celdasAdyacentes->getTamanioLista(); i++){
+        if(celdasAdyacentes->obtenerSegunPosicionDato(i)->obtenerCelula()->estaMuerta()){
+            celdasAdyacentes->obtenerSegunPosicionDato(i)->obtenerCelula()->revivir();
         }
     }
+
+
 }
 
 
 
 int Celda::obtenerCantCelVivasAdy(){
     int cantCelVivas = 0;
-    celdasAdyacentes->iniciarCursor();
-    while (celdasAdyacentes->avanzarCursor()){
-        if(celdasAdyacentes->obtenerCursor()->obtenerCelula()->estaViva()){
+    for(int i = 0; i < celdasAdyacentes->getTamanioLista() ; i++ ){
+        if(celdasAdyacentes->obtenerSegunPosicionDato(i)->obtenerCelula()->estaViva()){
             cantCelVivas++;
         }
     }
@@ -109,21 +136,14 @@ void Celda::agregarAdyacente(Celda *unaCelda) {
 }
 
 void Celda::imprimirCelda() {
-    cout << "estadoActual de tableroCelda:  "<< estadoDeCelda ;
-    cout << "  posX: " << posicionX << "  posY: " <<posicionY << "  posZ: " << posicionZ<< endl;
-
-}
-
-void Celda::revivirCelula() {
-    celdasAdyacentes->iniciarCursor();
-    while (celdasAdyacentes->avanzarCursor()){
-        if(celdasAdyacentes->obtenerCursor()->obtenerCelula()->estaMuerta()){
-            celdasAdyacentes->obtenerCursor()->obtenerCelula()->revivir();
-            return;
-        }
+    if(this!= NULL){
+        cout << "estadoActual de tableroCelda:  "<< estadoDeCelda ;
+        cout << "  posX: " << posicionX << "  posY: " <<posicionY << "  posZ: " << posicionZ<< endl;
     }
 
 }
+
+
 
 int Celda::getEstado() {
 

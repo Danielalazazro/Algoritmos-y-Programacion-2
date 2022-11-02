@@ -33,7 +33,7 @@ public:
      * pre:
      * post:
      */
-    void aplicarConportamiento();
+    void aplicarConportamiento(int *pInt);
     /*
      * pre:
      * post:
@@ -48,7 +48,7 @@ public:
      * pre:
      * post:
      */
-    void aplicarPortal();
+    void aplicarPortal(int *pInt);
     /*
      *pre:
      *post:

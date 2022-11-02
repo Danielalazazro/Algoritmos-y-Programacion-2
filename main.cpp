@@ -6,6 +6,7 @@ int main() {
     Juego* juego = new Juego();
     juego->iniciarJuego();
     delete juego;
+
     return 0;
 }
 /*Tablero* untablero = new Tablero(6,6,6);

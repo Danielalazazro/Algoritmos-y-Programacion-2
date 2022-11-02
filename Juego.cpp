@@ -75,9 +75,9 @@ void Juego::cargarDimensionesDelTableroUsuario(){
 }
 
 void Juego::cargaDeDimensionesDeTableroAleatoria(){
-    int anchoAleatorio = 3 + rand() %  20;
-    int altoAleatorio = 3 + rand() % 20;
-    int profundidadAleatorio = 3 + rand() % 20;
+    int anchoAleatorio = 3 + rand() %  4;
+    int altoAleatorio = 3 + rand() % 4;
+    int profundidadAleatorio = 3 + rand() % 4;
     tablero = new Tablero(anchoAleatorio, altoAleatorio, profundidadAleatorio);
     tablero->cargarCelulasVivasyCargaRandom();
 

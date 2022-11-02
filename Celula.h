@@ -89,17 +89,19 @@ public:
      * pre:
      * post:
      */
-    Gen* promedioDeCargas(Lista<Celula *> *celulasVivas);
+    void promedioDeCargas(Lista<Celula *> *celulasVivas, int *cargaGen1, int *cargaGen2, int *cargaGen3);
     /*
      * pre:
      * post:
      */
-    Gen* minimoDeCargas(Lista<Celula *> *celulasVivas);
+    void minimoDeCargas(Lista<Celula *> *celulasVivas, int *cargaGen1, int *cargaGen2, int *cargaGen3);
     /*
      * pre:
      * post:
      */
-    Gen* maximoDeCargas(Lista<Celula *> *celulasVivas);
+    void maximoDeCargas(Lista<Celula *> *celulasVivas, int *pGen, int *pInt, int *pInt1);
+
+    void antesVivaAhoraMuerta();
 };
 
 
