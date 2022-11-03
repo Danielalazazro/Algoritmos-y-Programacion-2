@@ -98,7 +98,12 @@ int Tablero::obtenerProfundidad() {
 }
 Tablero::Tablero(int cantidadFila, int cantidadColumnas, int cantidaProfundiad) {
     //creo todas las celdas
-
+    this->cantTurno = 0;
+    listaCaracteresCubo = new Lista<char> ();
+    this->cantCelNacidasTurno = 0,
+    this->cantCelMuertasTurno = 0;
+    this->cantidadCelulasMuertasTotales = 0;
+    this->cantidadCelulasNacidasTotales = 0;
     this->tableroCelda = new Lista< Lista <Lista<Celda*> *> *>();
     this->cantidadMaximaPosX = cantidadFila;
     this->cantidadMaximaPosY = cantidadColumnas;
@@ -254,28 +259,44 @@ void Tablero::asignarCeldasAdayacentes(Celda* unaCelda) {
     }
 }
 
-void Tablero::imprimirTablero(){
+void Tablero::imprimirTableroyResumen(){
 
     cout << "cantidad de filas :"<<cantidadMaximaPosX << "\t";
     cout << "cantidad de columna :"<<cantidadMaximaPosY << "\t";
     cout << "cantidad de planos: "<<cantidadMaximaPosZ << "\t";
     cout << "cantidad de celulas vivas de actuales: " << cantidadCelulaVivasActuales << "\n";
     cout << "cantidad de celulas vivas para nacer: "<< cantidadCelulasVecinasParaNacer << "\t";
-
     cout << "cantidad de celulas para seguir viva 1:"<<cantidadCelulasVecinasParaSeguirViva1 << "\t";
     cout << "cantidad de celulas para seguir viva 2:"<< cantidadCelulaVecinasParaSeguirViva2 << "\t"<<"\n";
-    for( int prof = 0; prof<3; prof++){
-        cout << "imprime el tableroCelda en  z = "<< prof << endl;
+    //cout << "cantidad de celulas muertas totales:  " << cantidadCelulasMuertasTotales << "\n";
+    //cout << "cantidad de celulas nacidas totales: " << cantidadCelulasNacidasTotales << "\n";
+    cout << "cantidad de celulas muertas en este turno: " <<cantCelMuertasTurno <<" \t ";
+    cout << "cantidad de celulas nacidas en este turno: "<<cantCelNacidasTurno<<" \t ";
+    cout << "El numero de turno es: "<<cantTurno<<"\n";
+    float promedioDeNacidas = (float) cantidadCelulasNacidasTotales/(float) cantTurno;
+    float promedioMuertas = (float) cantidadCelulasMuertasTotales/(float) cantTurno;
+    cout << "Promedio de nacimientos de celulas : "<<promedioDeNacidas<< "\t";
+    cout << "Promedio de muertes de cada celula: "<<promedioMuertas << "\n";
+
+    reporteSiseCongeloTablero();
+    imprimirTablero();
+
+}
+
+
+void Tablero::insertarCaracteresEnLista(Lista<char>* listaInsertar){
+    for( int prof = 0; prof < this->cantidadMaximaPosZ; prof++){
         for(int i = 0; i < this->cantidadMaximaPosX; i++) {
             for (int j = 0; j < this->cantidadMaximaPosY; j++) {
                 Celda *celda = obtenerCelda(prof, i, j);
-                celda->obtenerCelula()->dibujar();
+                listaInsertar->insertarElemento(celda->obtenerCelula()->dibujar() );
             }
-            cout << "\n";
         }
     }
 
+
 }
+
 void Tablero::setearCantidadCelulasVivasParaNacer(int cantCelulasParaNacer, int cantCelulasParaSeguirViva1, int cantCelulasParaSeguirViva2 ,int modoJuego){
 
     this->cantidadCelulasVecinasParaNacer = cantCelulasParaNacer;
@@ -286,12 +307,16 @@ void Tablero::setearCantidadCelulasVivasParaNacer(int cantCelulasParaNacer, int 
 }
 
 void Tablero::actualizarTablero(){
-    imprimirTablero();
+    imprimirTableroyResumen();
+    cantCelNacidasTurno = 0, cantCelMuertasTurno = 0;
+    int nuevasCelulas = 0;
     aplicarLogicaDelJuego();
     for(int i = 0; i < cantidadMaximaPosX; i++){
         for(int j = 0; j < cantidadMaximaPosY ; j++){
             for(int k = 0; k < cantidadMaximaPosZ ; k++){
-                obtenerCelda(k, i, j)->aplicarConportamiento(&cantidadCelulaVivasActuales);
+                nuevasCelulas = cantCelNacidasTurno;
+                obtenerCelda(k, i, j)->aplicarConportamiento(&cantCelNacidasTurno);
+                cantidadCelulaVivasActuales += (cantCelNacidasTurno - nuevasCelulas);
                 if(obtenerCelda(k,i,j)->tieneEstadoProcreadora()){
                     setCantCelulasVivasParaNacer();
                 }
@@ -299,10 +324,13 @@ void Tablero::actualizarTablero(){
                     obtenerCelda(k,i,j)->obtenerCelula()->antesVivaAhoraMuerta();
                     obtenerCelda(k,i,j)->obtenerCelula()->matarCelula();
                     cantidadCelulaVivasActuales--;
+                    cantCelMuertasTurno++;
                 }
             }
         }
     }
+    cantidadCelulasNacidasTotales += cantCelNacidasTurno;
+    cantidadCelulasMuertasTotales += cantCelMuertasTurno;
     actualizarEstadoDeCeldas();
 }
 void Tablero::actualizarEstadoDeCeldas(){
@@ -328,27 +356,6 @@ int Tablero::minimoDeLasDimensionesTablero(){
     return min2;
 }
 
-/*Tablero::Tablero(int cantidadFila, int cantidadColumnas, int cantidaProfundiad) {
-    //creo todas las celdas
-
-    this->tableroCelda = new Lista< Lista <Lista<Celda*> *> *>();
-    this->cantidadMaximaPosX = cantidadFila;
-    this->cantidadMaximaPosY = cantidadColumnas;
-    this->cantidadMaximaPosZ = cantidaProfundiad;
-    // tableroCelda->obtener(profundida4)->obtener(fila7)->obtenerSegunPosicionDato(columna9)
-    for(int i = 0; i < this->cantidadMaximaPosZ; i++){
-        Lista<Lista<Celda*>*>* columna = new Lista<Lista<Celda*>*>();
-        for(int j = 0; j < this->cantidadMaximaPosX ; j++){
-            Lista<Celda*>* fila = new Lista< Celda* >();
-            for(int k = 0; k < this->cantidadMaximaPosY; k++){
-                Celda* celda = new Celda(j, k, i);
-                //tableroCelda
-                fila->insertarElemento(celda);
-            }
-            columna->insertarElemento(fila);
-        }
-        this->tableroCelda->insertarElemento(columna);
-    }*/
 
 Tablero::~Tablero() {
     //deletes de celdas;
@@ -362,6 +369,8 @@ Tablero::~Tablero() {
         delete this->tableroCelda->obtenerSegunPosicionDato(i);
     }
     delete this->tableroCelda;
+
+    delete this->listaCaracteresCubo;
 }
 
 void Tablero::cargarParametrosRandom() {
@@ -390,16 +399,14 @@ void Tablero::aplicarLogicaDelJuego() {
             for(int k = 0; k < cantidadMaximaPosZ; k++){
                 Celda * unaCelda = obtenerCelda(k, i, j);
                 cantCelVivas = unaCelda->obtenerCantCelVivasAdy();
-                //Lista<Celula*>* unaListaCelulas = new Lista<Celula*>();
                 if((unaCelda->obtenerCelula()->estaMuerta()) && (cantCelVivas == cantidadCelulasVecinasParaNacer)){
                     Lista<Celula*>* unaListaCelulas = new Lista<Celula*>();
                     unaCelda->obtenerCelula()->revivir();
                     int estadoCelda = unaCelda->getEstado();
                     unaListaCelulas = obtenerCelulasVivasActuales(unaCelda->getCeldasAdyacentes() ,unaListaCelulas);
                     unaCelda->obtenerCelula()->heredarCargaGenetica(unaListaCelulas, estadoCelda);
-                    cantidadCelulaVivasActuales ++;
-                    //tengo que eliminar la lista de celulas pedidad y luego correr con vangrind e implmentar bmp
-
+                    cantidadCelulaVivasActuales++;
+                    this->cantCelNacidasTurno++;
                     delete unaListaCelulas;
                 }
                 else if((unaCelda->obtenerCelula()->estaViva()) && (puedeMantenerseConVida(cantCelVivas))){
@@ -409,6 +416,7 @@ void Tablero::aplicarLogicaDelJuego() {
                     unaCelda->obtenerCelula()->antesVivaAhoraMuerta();
                     unaCelda->obtenerCelula()->matarCelula();
                     cantidadCelulaVivasActuales--;
+                    this->cantCelMuertasTurno++;
                 }
             }
         }
@@ -421,14 +429,77 @@ bool Tablero::puedeMantenerseConVida(int cantCelVivas) {
 
 Lista<Celula*>* Tablero::obtenerCelulasVivasActuales(Lista<Celda *> *celdaAdyacentes, Lista<Celula*>* listaCelulas) {
     celdaAdyacentes->iniciarCursor();
-
     while(celdaAdyacentes->avanzarCursor()){
         if(celdaAdyacentes->obtenerCursor()== NULL) break;
         if (celdaAdyacentes->obtenerCursor()->obtenerCelula()->estaViva()){
             listaCelulas->insertarElemento(celdaAdyacentes->obtenerCursor()->obtenerCelula());
         }
     }
-
     return listaCelulas;
+}
+
+void Tablero::aumentarTurno() {
+    cantTurno++;
+}
+
+void Tablero::imprimirTablero() {
+    for( int prof = 0; prof < this->cantidadMaximaPosZ; prof++){
+        cout << "imprime el tableroCelda en  z = "<< prof << endl;
+        for(int i = 0; i < this->cantidadMaximaPosX; i++) {
+            for (int j = 0; j < this->cantidadMaximaPosY; j++) {
+                Celda *celda = obtenerCelda(prof, i, j);
+                std::cout << celda->obtenerCelula()->dibujar();
+            }
+            cout << "\n";
+        }
+    }
+
+}
+
+bool Tablero::listasCaracteresSonIguales(Lista<char> *nuevaListaCarct, Lista<char> *caracteresCuboAnt) {
+   if( nuevaListaCarct->getTamanioLista() != caracteresCuboAnt->getTamanioLista()){
+       return false;
+   }
+   bool sonIguales = true;
+   int i = 0;
+   int tamLista = nuevaListaCarct->getTamanioLista();
+   while( i < tamLista && sonIguales ){
+       if( nuevaListaCarct->obtenerSegunPosicionDato(i) != caracteresCuboAnt->obtenerSegunPosicionDato(i) ){
+           sonIguales = false;
+       }
+       i++;
+   }
+   return sonIguales;
+}
+
+void Tablero::reporteSiseCongeloTablero() {
+    Lista<char>* nuevaLista = new Lista<char>();
+    if(cantTurno == 1 ){
+        insertarCaracteresEnLista(listaCaracteresCubo);
+    }
+
+    if(cantTurno >= 2 ){
+        insertarCaracteresEnLista(nuevaLista);
+    }
+
+    bool iguales = listasCaracteresSonIguales(nuevaLista, listaCaracteresCubo);
+    if ( !iguales && cantTurno >= 2){
+        delete listaCaracteresCubo;
+        listaCaracteresCubo = new Lista<char>() ;
+        int i = 0;
+        int tamTotal = nuevaLista->getTamanioLista();
+        while( i < tamTotal){
+            listaCaracteresCubo->insertarElemento( nuevaLista->obtenerSegunPosicionDato(i)  );
+            i++;
+        }
+    }
+    if(iguales){
+        std::cout<<"El juego se Congelo"<<std::endl;
+    }
+    else{
+        std::cout<<"El juego NO se Congelo"<<std::endl;
+    }
+
+    delete nuevaLista;
 
 }

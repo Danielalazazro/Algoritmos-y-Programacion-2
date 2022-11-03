@@ -33,14 +33,14 @@ Lista<Celda*>* Celda::getCeldasAdyacentes(){
     return celdasAdyacentes;
 }
 
-void Celda::aplicarConportamiento(int *cantCelVivasAct) {
+void Celda::aplicarConportamiento(int *cantCelNacidasTurno) {
 
         if (estadoDeCelda == 1){
             aplicarEnvenenamiento();
         }
 
         else if (estadoDeCelda == 3){
-            aplicarPortal(cantCelVivasAct);
+            aplicarPortal(cantCelNacidasTurno);
         }
 
 }
@@ -66,7 +66,7 @@ void Celda::aplicarEnvenenamiento(){
 
 
 
-void Celda::aplicarPortal(int *cantCelVivas) {
+void Celda::aplicarPortal(int *cantCelNacidasTurno) {
 
     bool nacioCelula = false;
     int i = 0;
@@ -87,7 +87,7 @@ void Celda::aplicarPortal(int *cantCelVivas) {
     while(( i < 1  ) && ( j < celdasAdyacentes->getTamanioLista())){
         if(celdasAdyacentes->obtenerSegunPosicionDato(j)->obtenerCelula()->estaMuerta()){
             celdasAdyacentes->obtenerSegunPosicionDato(j)->obtenerCelula()->revivir();
-            (*cantCelVivas ) += 1;
+            (*cantCelNacidasTurno) +=1;
             i++;
         }
         j++;

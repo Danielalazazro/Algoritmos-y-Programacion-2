@@ -39,7 +39,7 @@ public:
      * pre:
      * post:
      */
-    void dibujar();
+    char dibujar();
     /*
      * pre: -
      * post: devulve 0 o 1 si esta viva o muerta.

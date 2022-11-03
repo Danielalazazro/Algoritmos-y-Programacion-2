@@ -23,7 +23,7 @@ Celula ::Celula() {
 void Celula::setearCargaGeneticaUsuario(){
     arrayGen[0].insertarCargaUsuario();
     arrayGen[1].insertarCargaUsuario();
-    arrayGen[3].insertarCargaUsuario();
+    arrayGen[2].insertarCargaUsuario();
 }
 void Celula::setearCargaGeneticaAleatoria(){
     arrayGen[0] = Gen(rand() % maximaCargaGenetica);
@@ -46,12 +46,12 @@ bool Celula::estaViva(){
     return (estadoActual == 1);
 }
 
-void Celula::dibujar(){
+char Celula::dibujar(){
     if(estadoActual == 1){
-        std::cout<<"*";
+        return '*';
     }
     else{
-        std::cout<<"o";
+        return 'o';
     }
 }
 

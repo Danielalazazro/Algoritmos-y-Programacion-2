@@ -3,10 +3,14 @@
 #include "Tablero.h"
 #include "cmath"
 
-Juego::Juego(){}
+using namespace std;
+
+Juego::Juego(){
+    ingresoUsuarioMenu = 0;
+    modoJuego = 0;
+}
 int Juego::obtenerModoJuego(){
     return this->modoJuego;
-
 }
 
 void Juego::mostrarModoDeJuego(){
@@ -27,7 +31,7 @@ void Juego::mostrarModoDeJuego(){
 }
 
 
-void Juego::iniciarJuego(){
+void Juego::configuracionDeJuego(){
     mostrarModoDeJuego();
     if(modoJuego == 1) {
         cargarDimensionesDelTableroUsuario();
@@ -42,20 +46,47 @@ void Juego::iniciarJuego(){
         cargarDimensionesDelTableroUsuario();
         cargarPosicionesyOtroParametros();
     }
-    continuarJuego();
+    tablero->aumentarTurno();
+    tablero->actualizarTablero();
 }
+
+void Juego::iniciarJuego(){
+    configuracionDeJuego();
+    mostrarMenuJuego();
+}
+
 //Llamo a las celulas ingresada por el usuario segun el modo de juego elegido.
 //
 void Juego::continuarJuego(){
     char continuar = 's';
     while(continuar == 's'){
+        tablero->aumentarTurno();
         tablero->actualizarTablero();
         cout << "Desea continuar el juego (s/n) ?:"<<endl;
         cin >> continuar;
     }
+    //Menu de Juego
+
 
 }
+void Juego:: mostrarMenuJuego() {
 
+    while (ingresoUsuarioMenu != 3 ) {
+        cout << "Menu del Juego de la vida" << endl;
+        cout << " 1. Ejecutar otro turno" << endl;
+        cout << " 2. Reiniciar el juego" << endl;
+        cout << " 3. Terminar el juego de la vida" << endl;
+        cout << "Ingrese un opcion: " << endl;
+        verificadorEnRango(1, 3, &ingresoUsuarioMenu);
+        if (ingresoUsuarioMenu == 1) {
+            ejecutarOtroTurno();
+        } else if (ingresoUsuarioMenu == 2) {
+            reiniciarJuego(); //mostrarMenuJuego()
+        } else if (ingresoUsuarioMenu == 3) {
+            terminarJuego();
+        }
+    }
+}
 
 void Juego::cargarDimensionesDelTableroUsuario(){
     int fila = 0;
@@ -73,15 +104,11 @@ void Juego::cargarDimensionesDelTableroUsuario(){
     //delete tableroCelda;
 
 }
-
 void Juego::cargaDeDimensionesDeTableroAleatoria(){
-    int anchoAleatorio = 3 + rand() %  4;
-    int altoAleatorio = 3 + rand() % 4;
-    int profundidadAleatorio = 3 + rand() % 4;
+    int anchoAleatorio = 3 + rand() %  20;
+    int altoAleatorio = 3 + rand() % 20;
+    int profundidadAleatorio = 3 + rand() % 20;
     tablero = new Tablero(anchoAleatorio, altoAleatorio, profundidadAleatorio);
-    tablero->cargarCelulasVivasyCargaRandom();
-
-
 }
 
 void Juego::verificadorEnRango(int limiteinferior, int limiteSuperior, int *ingresoUsuario){
@@ -154,7 +181,7 @@ Juego::~Juego(){
 //
 void Juego::cargarPosicionesyOtroParametros() {
     int cantCelulasVecinasParaNacer, cantidadCelulasSigaViva1, cantidadCelulasSigaViva2, cantidadCelulasVivas;
-    cout << "Ingrese la cantidad de celulas vivas (8 a 26):" ;
+    cout << "Ingrese la cantidad de celulas vivas (" << minimoCantCelulaVivas << " a "<< maxCantCelulasVivas() << "):" ;
 
     verificadorEnRango(minimoCantCelulaVivas, maxCantCelulasVivas(),&cantidadCelulasVivas);
     tablero->setCantCelulasVivasActuale(cantidadCelulasVivas);
@@ -163,10 +190,22 @@ void Juego::cargarPosicionesyOtroParametros() {
     cantCelulasVecinasParaNacer = 1 + rand() % tablero->minEntreFilaColumnaProfundidad();
     cantidadCelulasSigaViva1 = 1 + rand() % tablero->minEntreFilaColumnaProfundidad();
     cantidadCelulasSigaViva2 = cantidadCelulasSigaViva1 + 2;
-
-
     tablero->setearCantidadCelulasVivasParaNacer(cantCelulasVecinasParaNacer,cantidadCelulasSigaViva1,cantidadCelulasSigaViva2, 3);
 
+}
 
+void Juego::ejecutarOtroTurno() {
+    tablero->aumentarTurno();
+    tablero->actualizarTablero();
+}
+
+void Juego::reiniciarJuego() {
+    delete tablero;
+    iniciarJuego();
+
+}
+
+void Juego::terminarJuego() {
+    cout << "Termino el juego, gracias por jugar."<<endl;
 
 }

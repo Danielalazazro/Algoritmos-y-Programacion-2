@@ -33,7 +33,7 @@ public:
      * pre:
      * post:
      */
-    void aplicarConportamiento(int *pInt);
+    void aplicarConportamiento(int *cantCelNacidasTurno);
     /*
      * pre:
      * post:
@@ -48,7 +48,7 @@ public:
      * pre:
      * post:
      */
-    void aplicarPortal(int *pInt);
+    void aplicarPortal(int *cantCelNacidasTurno);
     /*
      *pre:
      *post:

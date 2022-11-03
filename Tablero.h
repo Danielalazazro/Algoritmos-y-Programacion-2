@@ -26,6 +26,19 @@ private:
 
     int cantidadCelulaVecinasParaSeguirViva2;
 
+    int cantidadCelulasMuertasTotales;
+
+    int cantidadCelulasNacidasTotales;
+
+    int cantCelNacidasTurno;
+
+    int cantCelMuertasTurno;
+
+    int cantTurno;
+
+    Lista<char>* listaCaracteresCubo;
+
+
 
 
 
@@ -66,7 +79,7 @@ public:
      * pre:
      * post:
      */
-    void imprimirTablero();
+    void imprimirTableroyResumen();
     /*
      * pre:
      * post
@@ -163,6 +176,17 @@ public:
      * post:
      */
     void actualizarEstadoDeCeldas();
+
+    void aumentarTurno();
+
+    void imprimirTablero();
+
+    bool listasCaracteresSonIguales(Lista<char> *nuevaListaCarct, Lista<char> *caracteresCuboAnt);
+
+    void insertarCaracteresEnLista(Lista<char> *listaInsertar);
+
+    void reporteSiseCongeloTablero();
+
 };
 
 

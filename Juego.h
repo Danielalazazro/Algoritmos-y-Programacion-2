@@ -12,8 +12,10 @@ class Juego {
 private:
 
     Tablero* tablero;
-
+    int ingresoUsuarioMenu;
     int modoJuego;
+
+
 
 public:
     /*
@@ -51,7 +53,7 @@ public:
      * pre: juego no iniciado
      * post: inicia el juego c
      */
-    void iniciarJuego();
+    void configuracionDeJuego();
     /*
      * pre:el juego debe estar iniciado
      * post: el juego de carga con las celulas en el tableroCelda y continua
@@ -100,8 +102,28 @@ public:
      * post:devuelve el maximo entre la dimensiones del tableroCelda.
      */
     int maxCantCelulasVivas();
-
+    /*
+     * pre:
+     * post: Le solcitamos al usuario el ingrseo de  cantidad de celulas vivas, cantidad de celulas vecinas para que nazca otra y para que continue viva.
+     */
     void cargarPosicionesyOtroParametros();
+    /*
+     * pre:-
+     * post:una vez iniciado el juego se imprime el menu para que el usuario continue con el juego o no o terminar.
+     */
+    void mostrarMenuJuego();
+    /*
+     * pre:-
+     * post:actualiza el tablero segun las reglas del juego
+     */
+    void ejecutarOtroTurno();
+
+    void reiniciarJuego();
+
+    void terminarJuego();
+
+
+    void iniciarJuego();
 };
 
 
