@@ -80,7 +80,7 @@ void Tablero::cargarCelulaUsuario(int modoJuego) {
         else{
             cout << "ERROR POSCION OCUPADA INGRESE OTRA POSICION DE LA CELDA CON CELULA VIVA \n";
         }
-        //para que garantizarnos que entre al while
+
     }
 
 }
@@ -429,9 +429,12 @@ bool Tablero::puedeMantenerseConVida(int cantCelVivas) {
 
 Lista<Celula*>* Tablero::obtenerCelulasVivasActuales(Lista<Celda *> *celdaAdyacentes, Lista<Celula*>* listaCelulas) {
     celdaAdyacentes->iniciarCursor();
-    while(celdaAdyacentes->avanzarCursor()){
-        if(celdaAdyacentes->obtenerCursor()== NULL) break;
-        if (celdaAdyacentes->obtenerCursor()->obtenerCelula()->estaViva()){
+    int i = 0;
+    while(celdaAdyacentes->avanzarCursor() && (i < celdaAdyacentes->getTamanioLista())){
+        if(celdaAdyacentes->obtenerCursor()== NULL) {
+             i++;
+        }
+        else if (celdaAdyacentes->obtenerCursor()->obtenerCelula()->estaViva()){
             listaCelulas->insertarElemento(celdaAdyacentes->obtenerCursor()->obtenerCelula());
         }
     }
